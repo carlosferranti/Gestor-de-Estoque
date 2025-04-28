@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Vendas</title>
     <style>
+        /* Estilos do formulário */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -20,7 +21,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 400px; /* Ajustando a largura do formulário */
+            width: 400px;
         }
         .form-container h2 {
             text-align: center;
@@ -72,48 +73,54 @@
 
     <div class="form-container">
         <h2>Cadastro de Vendas</h2>
-        <form action="#" method="POST">
-            <!-- Campos do Comprador -->
-            <div class="form-group">
-                <label for="buyerName">Nome do Comprador</label>
-                <input type="text" id="buyerName" name="buyerName" required="">
-            </div>
-            <div class="form-group">
-                <label for="buyerEmail">E-mail do Comprador</label>
-                <input type="email" id="buyerEmail" name="buyerEmail" required="">
-            </div>            
-            <!-- Campos do Produto -->
+        <form method="POST">
+            <!-- Campo para o Nome do Produto -->
             <div class="form-group">
                 <label for="productName">Nome do Produto</label>
-                <input type="text" id="productName" name="productName" required="">
-            </div>
-            <div class="form-group">
-                <label for="productCategory">Categoria</label>
-                <select id="productCategory" name="productCategory" required="">
-                    <option value="eletronicos">Eletrônicos</option>
-                    <option value="moveis">Móveis</option>
-                    <option value="roupas">Roupas</option>
-                    <option value="alimentos">Alimentos</option>
+                <select id="productName" name="productName" required="">
+                    <!-- Os produtos serão carregados aqui -->
                 </select>
             </div>
+
+            <!-- Campo para o Preço do Produto -->
             <div class="form-group">
                 <label for="productPrice">Preço do Produto</label>
                 <input type="number" id="productPrice" name="productPrice" required="" step="0.01" min="0">
             </div>
+
+            <!-- Campo para a Quantidade -->
             <div class="form-group">
                 <label for="productQuantity">Quantidade</label>
-                <input type="number" id="productQuantity" name="productQuantity" required="" min="1">
+                <input type="number" id="productQuantity" name="productQuantity" required="" min="1" step="1">
             </div>
-            
-            <!-- Botão para submeter -->
+
+            <!-- Botão de submissão -->
             <div class="form-group">
                 <input type="submit" value="Cadastrar Venda">
             </div>
         </form>
 
-        <!-- Botão de voltar -->
+        <!-- Botão para voltar à página inicial -->
         <button class="back-button" onclick="window.location.href='index.html'">Voltar para Página Inicial</button>
     </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            // Obter os produtos do sessionStorage
+            var products = JSON.parse(sessionStorage.getItem('products')) || [];
+
+            // Obter o select onde os produtos serão adicionados
+            var productSelect = document.getElementById('productName');
+
+            // Adicionar as opções de produtos no select
+            products.forEach(function(product) {
+                var option = document.createElement('option');
+                option.value = product.name;
+                option.textContent = product.name;
+                productSelect.appendChild(option);
+            });
+        });
+    </script>
 
 </body>
 </html>

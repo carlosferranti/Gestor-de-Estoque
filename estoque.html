@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- saved from url=(0072)file:///C:/Users/carlo/OneDrive/%C3%81rea%20de%20Trabalho/DDD/index.html -->
 <html lang="pt-br">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Estoque</title>
+    <title>Cadastro de Estoque</title>
     <style>
+        /* Estilos do formulário */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -21,7 +21,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 400px; /* Ajustando a largura do formulário */
+            width: 400px;
         }
         .form-container h2 {
             text-align: center;
@@ -35,7 +35,7 @@
             margin-bottom: 5px;
             display: block;
         }
-        input[type="text"], input[type="number"], input[type="submit"], select {
+        input[type="text"], input[type="number"], input[type="email"], input[type="submit"], select {
             width: 100%;
             padding: 10px;
             font-size: 16px;
@@ -72,12 +72,8 @@
 <body>
 
     <div class="form-container">
-        <h2>Controle de Estoque</h2>
-        <form action="file:///C:/Users/carlo/OneDrive/%C3%81rea%20de%20Trabalho/DDD/index.html#" method="POST">
-            <div class="form-group">
-                <label for="id">ID</label>
-                <input type="number" id="id" name="id" required="" min="1">
-            </div>
+        <h2>Cadastro de Produto - Estoque</h2>
+        <form id="productForm" method="POST">
             <div class="form-group">
                 <label for="productName">Nome do Produto</label>
                 <input type="text" id="productName" name="productName" required="">
@@ -87,28 +83,36 @@
                 <input type="number" id="quantity" name="quantity" required="" min="1">
             </div>
             <div class="form-group">
-                <label for="category">Categoria</label>
-                <select id="category" name="category" required="">
-                    <option value="eletronicos">Eletrônicos</option>
-                    <option value="moveis">Móveis</option>
-                    <option value="roupas">Roupas</option>
-                    <option value="alimentos">Alimentos</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="price">Preço</label>
-                <input type="number" id="price" name="price" required="" step="0.01" min="0">
-            </div>
-            <div class="form-group">
-                <label for="location">Localização no Depósito</label>
-                <input type="text" id="location" name="location" required="">
-            </div>
-            <div class="form-group">
                 <input type="submit" value="Cadastrar Produto">
             </div>
         </form>
+
         <button class="back-button" onclick="window.location.href='index.html'">Voltar para Página Inicial</button>
     </div>
+
+    <script>
+        // Adicionar um produto ao sessionStorage ao submeter o formulário
+        document.getElementById('productForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var productName = document.getElementById('productName').value;
+            var quantity = document.getElementById('quantity').value;
+
+            // Obter os produtos armazenados ou inicializar um array vazio
+            var products = JSON.parse(sessionStorage.getItem('products')) || [];
+
+            // Adicionar o novo produto
+            products.push({
+                name: productName,
+                quantity: quantity
+            });
+
+            // Salvar no sessionStorage
+            sessionStorage.setItem('products', JSON.stringify(products));
+
+            alert('Produto cadastrado com sucesso!');
+        });
+    </script>
 
 </body>
 </html>
