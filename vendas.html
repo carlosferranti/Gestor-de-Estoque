@@ -1,126 +1,139 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Vendas</title>
-    <style>
-        /* Estilos do formulário */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f9;
-        }
-        .form-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 400px;
-        }
-        .form-container h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            font-size: 14px;
-            margin-bottom: 5px;
-            display: block;
-        }
-        input[type="text"], input[type="number"], input[type="email"], input[type="submit"], select {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-        input[type="submit"] {
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-        .back-button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            transition: background-color 0.3s;
-        }
-        .back-button:hover {
-            background-color: #218838;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cadastro de Vendas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .form-container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 400px;
+    }
+    h2 {
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="form-container">
-        <h2>Cadastro de Vendas</h2>
-        <form method="POST">
-            <!-- Campo para o Nome do Produto -->
-            <div class="form-group">
-                <label for="productName">Nome do Produto</label>
-                <select id="productName" name="productName" required="">
-                    <!-- Os produtos serão carregados aqui -->
-                </select>
-            </div>
+<div class="form-container">
+  <h2>Cadastro de Vendas</h2>
+  <div class="form-group">
+    <label for="productSelect">Produto</label>
+    <select id="productSelect"></select>
+  </div>
+  <div class="form-group">
+    <label for="quantity">Quantidade Atual em Estoque</label>
+    <input type="number" id="quantity" min="0" required>
+  </div>
+  <button onclick="analyzeStock()">Cadastrar Venda</button>
+  <button onclick="window.location.href='index.html'" style="background-color: #28a745;">Voltar para Página Inicial</button>
 
-            <!-- Campo para o Preço do Produto -->
-            <div class="form-group">
-                <label for="productPrice">Preço do Produto</label>
-                <input type="number" id="productPrice" name="productPrice" required="" step="0.01" min="0">
-            </div>
+  <div class="result" id="resultAction"></div>
+</div>
 
-            <!-- Campo para a Quantidade -->
-            <div class="form-group">
-                <label for="productQuantity">Quantidade</label>
-                <input type="number" id="productQuantity" name="productQuantity" required="" min="1" step="1">
-            </div>
+<script>
+  window.onload = function() {
+    let parameters = JSON.parse(localStorage.getItem('parameters')) || [];
+    let productSelect = document.getElementById('productSelect');
 
-            <!-- Botão de submissão -->
-            <div class="form-group">
-                <input type="submit" value="Cadastrar Venda">
-            </div>
-        </form>
+    parameters.forEach(param => {
+      let option = document.createElement('option');
+      option.value = param.name;
+      option.textContent = param.name;
+      productSelect.appendChild(option);
+    });
+  }
 
-        <!-- Botão para voltar à página inicial -->
-        <button class="back-button" onclick="window.location.href='index.html'">Voltar para Página Inicial</button>
-    </div>
+  function analyzeStock() {
+    let productName = document.getElementById('productSelect').value;
+    let quantity = parseInt(document.getElementById('quantity').value);
 
-    <script>
-        window.addEventListener('load', function() {
-            // Obter os produtos do sessionStorage
-            var products = JSON.parse(sessionStorage.getItem('products')) || [];
+    if (isNaN(quantity)) {
+      alert('Informe a quantidade!');
+      return;
+    }
 
-            // Obter o select onde os produtos serão adicionados
-            var productSelect = document.getElementById('productName');
+    let parameters = JSON.parse(localStorage.getItem('parameters')) || [];
+    let product = parameters.find(p => p.name === productName);
 
-            // Adicionar as opções de produtos no select
-            products.forEach(function(product) {
-                var option = document.createElement('option');
-                option.value = product.name;
-                option.textContent = product.name;
-                productSelect.appendChild(option);
-            });
-        });
-    </script>
+    if (!product) {
+      alert('Produto não encontrado!');
+      return;
+    }
+
+    let ProdutoEmEstoque = quantity > 0;
+    let EstoqueBaixo = quantity <= product.lowStock;
+    let ExcessoEstoque = quantity >= product.highStock;
+    let ProdutoLocalizado = product.located;
+
+    let action = '';
+
+    if (ProdutoEmEstoque && !EstoqueBaixo && !ExcessoEstoque && ProdutoLocalizado) {
+      action = 'Estoque normal.';
+    } else if (ProdutoEmEstoque && EstoqueBaixo && !ExcessoEstoque && ProdutoLocalizado) {
+      action = 'Repor estoque.';
+    } else if (ProdutoEmEstoque && !EstoqueBaixo && ExcessoEstoque && ProdutoLocalizado) {
+      action = 'Considerar promoção/desconto.';
+    } else if (ProdutoEmEstoque && !EstoqueBaixo && !ExcessoEstoque && !ProdutoLocalizado) {
+      action = 'Atualizar localização.';
+    } else if (!ProdutoEmEstoque && !EstoqueBaixo && !ExcessoEstoque && !ProdutoLocalizado) {
+      action = 'Produto esgotado.';
+    } else if (!ProdutoEmEstoque && EstoqueBaixo && !ExcessoEstoque && !ProdutoLocalizado) {
+      action = 'Erro de cadastro, revisar.';
+    } else if (!ProdutoEmEstoque && !EstoqueBaixo && ExcessoEstoque && !ProdutoLocalizado) {
+      action = 'Revisar excesso de estoque.';
+    } else {
+      action = 'Situação não definida.';
+    }
+
+    document.getElementById('resultAction').innerText = 'Ação Sugerida: ' + action;
+  }
+</script>
 
 </body>
 </html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cadastro de Parâmetros</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: start;
+      gap: 40px;
+      padding: 40px;
+      margin: 0;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+    .form-container, .list-container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 400px;
+    }
+    h2 {
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      margin-top: 15px;
+      border: none;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .list-container h2 {
+      margin-bottom: 20px;
+    }
+    .parameter-item {
+      border-bottom: 1px solid #ccc;
+      padding: 10px 0;
+      font-size: 14px;
+      text-align: left;
+      position: relative;
+    }
+    .parameter-item:last-child {
+      border-bottom: none;
+    }
+    .delete-btn {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+    .delete-btn:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Formulário -->
+<div class="form-container">
+  <h2>Cadastro de Parâmetros</h2>
+  <div class="form-group">
+    <label for="lowStock">Limite Estoque Baixo</label>
+    <input type="number" id="lowStock" min="0" required>
+  </div>
+  <div class="form-group">
+    <label for="highStock">Limite Excesso de Estoque</label>
+    <input type="number" id="highStock" min="0" required>
+  </div>
+  <div class="form-group">
+    <label for="located">Produto Localizado?</label>
+    <select id="located" required>
+      <option value="true">Sim</option>
+      <option value="false">Não</option>
+    </select>
+  </div>
+  <button onclick="saveParameters()">Salvar Parâmetro</button>
+  <button onclick="window.location.href='index.html'" style="background-color: #28a745;">Voltar para Página Inicial</button>
+</div>
+
+<!-- Lista de Parâmetros -->
+<div class="list-container">
+  <h2>Parâmetros Cadastrados</h2>
+  <div id="parameterList">
+    <!-- Parâmetros aparecerão aqui -->
+  </div>
+</div>
+
+<script>
+  function saveParameters() {
+    const lowStockInput = document.getElementById('lowStock');
+    const highStockInput = document.getElementById('highStock');
+    const locatedInput = document.getElementById('located');
+
+    const lowStock = parseInt(lowStockInput.value);
+    const highStock = parseInt(highStockInput.value);
+    const located = locatedInput.value === 'true';
+
+    if (isNaN(lowStock)) {
+      alert('Preencha corretamente o campo "Limite Estoque Baixo".');
+      return;
+    }
+
+    if (isNaN(highStock)) {
+      alert('Preencha corretamente o campo "Limite Excesso de Estoque".');
+      return;
+    }
+
+    const parameters = JSON.parse(localStorage.getItem('parameters')) || [];
+
+    // Verifica se já existe UM parâmetro válido
+    if (parameters.length >= 1) {
+      alert('Já existe um parâmetro cadastrado. Exclua o existente para cadastrar um novo.');
+      return;
+    }
+
+    // Adiciona novo parâmetro
+    parameters.push({ lowStock, highStock, located });
+    localStorage.setItem('parameters', JSON.stringify(parameters));
+    alert('Parâmetro salvo com sucesso!');
+
+    // Limpa campos
+    lowStockInput.value = '';
+    highStockInput.value = '';
+    locatedInput.value = 'true';
+
+    loadParameters();
+  }
+
+  function loadParameters() {
+    const parameterList = document.getElementById('parameterList');
+    parameterList.innerHTML = ''; // Limpa a lista
+
+    const parameters = JSON.parse(localStorage.getItem('parameters')) || [];
+
+    if (!parameters.length) {
+      parameterList.innerHTML = '<p>Nenhum parâmetro cadastrado.</p>';
+      return;
+    }
+
+    // Como agora sempre terá no máximo 1, basta mostrar o primeiro
+    const param = parameters[0];
+
+    const item = document.createElement('div');
+    item.className = 'parameter-item';
+    item.innerHTML = `
+      <strong>Estoque Baixo:</strong> ${param.lowStock} <br>
+      <strong>Excesso Estoque:</strong> ${param.highStock} <br>
+      <strong>Localizado:</strong> ${param.located ? 'Sim' : 'Não'} <br><br>
+      <button onclick="deleteParameter()">Excluir Parâmetro</button>
+    `;
+    parameterList.appendChild(item);
+  }
+
+  function deleteParameter() {
+    if (confirm('Tem certeza que deseja excluir o parâmetro?')) {
+      localStorage.removeItem('parameters');
+      loadParameters();
+    }
+  }
+
+  window.onload = loadParameters;
+</script>
+
+
+
+
+
+</body>
+</html>

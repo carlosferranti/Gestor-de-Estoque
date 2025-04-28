@@ -1,115 +1,161 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Produtos</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .form-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 400px;  /* Largura ajustada para 400px, igual ao modelo de vendas.html */
-            box-sizing: border-box;  /* Garantir que o preenchimento não afete a largura */
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        input[type="text"], input[type="number"] {
-            width: 100%; /* Garantir que os inputs ocupem toda a largura da div */
-            padding: 12px; /* Aumentei um pouco o padding */
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;  /* Garantir que o padding e bordas não estorem */
-        }
-        button[type="submit"] {
-            padding: 12px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            background-color: #007bff;
-            color: white;
-            transition: background-color 0.3s;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        button[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-        .back-button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            transition: background-color 0.3s;
-            box-sizing: border-box;
-        }
-        .back-button:hover {
-            background-color: #218838;
-        }
-		.centered {
-			text-align: center;
-		}
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Produtos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      gap: 40px; /* Espaçamento entre o form e a lista */
+    }
+
+    .form-container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      box-sizing: border-box;
+    }
+
+    .products-list {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      height: 400px;
+      overflow-y: auto; /* Rolagem caso tenha muitos produtos */
+      box-sizing: border-box;
+    }
+
+    h2, h3 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    button[type="submit"], .back-button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 10px;
+    }
+
+    button[type="submit"] {
+      background-color: #007bff;
+      color: white;
+      transition: background-color 0.3s;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #0056b3;
+    }
+
+    .back-button {
+      background-color: #28a745;
+      color: white;
+      transition: background-color 0.3s;
+    }
+
+    .back-button:hover {
+      background-color: #218838;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      padding: 5px 0;
+      border-bottom: 1px solid #ddd;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="form-container">
-        <h2>Controle de Estoque</h2>
-		<h3 class="centered">Cadastro de Produto</h3>
-        <form id="productForm">
-            <input type="text" id="productName" placeholder="Nome do Produto" required>
-            <input type="number" id="productQuantity" placeholder="Quantidade" required>
-            <input type="number" id="productValue" placeholder="Valor" required>
-            <button type="submit">Cadastrar Produto</button>
-        </form>
+<div class="container">
+  <!-- Formulário -->
+  <div class="form-container">
+    <h2>Cadastro de Produto</h2>
+    <h3>Controle de Estoque</h3>
+    <form id="productForm">
+      <input type="text" id="productName" placeholder="Nome do Produto" required>
+      <input type="number" id="productQuantity" placeholder="Quantidade" required>
+      <input type="number" id="productValue" placeholder="Valor" required>
+      <button type="submit">Cadastrar Produto</button>
+    </form>
+    <button class="back-button" onclick="window.location.href='index.html'">Voltar para Página Inicial</button>
+  </div>
 
-        <!-- Botão para voltar à página inicial -->
-        <button class="back-button" onclick="window.location.href='index.html'">Voltar para Página Inicial</button>
-    </div>
+  <!-- Lista de Produtos -->
+  <div class="products-list">
+    <h2>Produtos Cadastrados</h2>
+    <ul id="productsList"></ul>
+  </div>
+</div>
 
-    <script>
-        // Ao submeter o formulário
-        document.getElementById('productForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Evitar envio do formulário
+<script>
+  function renderProducts() {
+    const productsList = document.getElementById('productsList');
+    productsList.innerHTML = ''; // Limpar lista
 
-            // Obter os valores do formulário
-            const name = document.getElementById('productName').value;
-            const quantity = document.getElementById('productQuantity').value;
-            const value = parseFloat(document.getElementById('productValue').value);
+    const products = JSON.parse(sessionStorage.getItem('products')) || [];
 
-            // Recuperar os produtos armazenados no sessionStorage, se existirem
-            let products = JSON.parse(sessionStorage.getItem('products')) || [];
+    products.forEach((product, index) => {
+      const li = document.createElement('li');
+      li.textContent = `${index + 1}. ${product.name} - Quantidade: ${product.quantity} - Valor: R$ ${product.value.toFixed(2)}`;
+      productsList.appendChild(li);
+    });
+  }
 
-            // Adicionar o novo produto
-            products.push({ name, quantity, value });
+  // Ao submeter o formulário
+  document.getElementById('productForm').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-            // Salvar novamente no sessionStorage
-            sessionStorage.setItem('products', JSON.stringify(products));
+    const name = document.getElementById('productName').value;
+    const quantity = document.getElementById('productQuantity').value;
+    const value = parseFloat(document.getElementById('productValue').value);
 
-            // Limpar os campos do formulário
-            document.getElementById('productForm').reset();
-        });
-    </script>
+    let products = JSON.parse(sessionStorage.getItem('products')) || [];
+
+    products.push({ name, quantity, value });
+
+    sessionStorage.setItem('products', JSON.stringify(products));
+
+    document.getElementById('productForm').reset();
+
+    renderProducts(); // Atualizar a lista
+  });
+
+  // Ao carregar a página
+  document.addEventListener('DOMContentLoaded', renderProducts);
+</script>
 
 </body>
 </html>

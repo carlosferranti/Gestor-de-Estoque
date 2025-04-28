@@ -26,20 +26,25 @@
 
         .form-container {
             background-color: white;
-            padding: 20px;
+            padding: 30px 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 400px;
+            width: 320px; /* Diminuí para melhor encaixe */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px; /* Espaçamento entre elementos */
         }
 
         h2 {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .button-container {
             display: flex;
-            justify-content: space-between;
-            gap: 10px;
+            flex-direction: column; /* Botões em coluna */
+            gap: 15px;
+            width: 100%;
         }
 
         .button-container a {
@@ -48,7 +53,7 @@
         }
 
         button {
-            padding: 15px 20px;
+            padding: 15px;
             font-size: 16px;
             border: none;
             border-radius: 5px;
@@ -56,8 +61,8 @@
             background-color: #007bff;
             color: white;
             transition: background-color 0.3s;
-            height: 80px;  /* Altura ajustada */
-            width: 100%;   /* Largura ajustada para 100% */
+            width: 100%; 
+            height: 60px; /* Altura mais equilibrada */
         }
 
         button:hover {
@@ -75,13 +80,16 @@
         <h2>Escolha uma opção</h2>
         <div class="button-container">
             <a href="estoque.html">
-                <button type="button">CONTROLE DE ESTOQUE</button>
+                <button type="button">CADASTRO DE PRODUTO</button>
             </a>
             <a href="vendas.html">
                 <button type="button">VENDAS</button>
             </a>
             <a href="report.html">
                 <button type="button">RELATÓRIO DE ESTOQUE</button>
+            </a>
+            <a href="parametros.html">
+                <button type="button">PARÂMETROS</button>
             </a>
         </div>
     </div>
