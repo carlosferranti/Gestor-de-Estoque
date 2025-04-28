@@ -72,6 +72,7 @@
                     <th>ID</th>
                     <th>Nome</th>
                     <th>Quantidade</th>
+                    <th>Valor</th>
                 </tr>
             </thead>
             <tbody>
@@ -79,29 +80,47 @@
             </tbody>
         </table>
 
-        <button class="back-button" onclick="window.location.href='estoque.html'">Voltar para Cadastro de Produtos</button>
+        <button class="back-button" onclick="window.location.href='index.html'">Voltar para Página Inicial</button>
     </div>
 
-    <script>
-        window.addEventListener('load', function() {
-            // Obter os produtos do sessionStorage
-            var products = JSON.parse(sessionStorage.getItem('products')) || [];
+<script>
+window.addEventListener('load', function() {
+    // Obter os produtos do sessionStorage
+    var products = JSON.parse(sessionStorage.getItem('products')) || [];
 
-            // Obter o corpo da tabela onde os produtos serão inseridos
-            var tableBody = document.querySelector('tbody');
+    // Adicionar um console.log para verificar os produtos carregados
+    console.log("Produtos carregados do sessionStorage:", products);
 
-            // Adicionar as linhas da tabela
-            products.forEach(function(product, index) {
-                var row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${product.name}</td>
-                    <td>${product.quantity}</td>
-                `;
-                tableBody.appendChild(row);
-            });
+    // Obter o corpo da tabela onde os produtos serão inseridos
+    var tableBody = document.querySelector('tbody');
+
+    // Verificar se há produtos
+    if (products.length === 0) {
+        // Caso não haja produtos, mostrar uma mensagem
+        tableBody.innerHTML = '<tr><td colspan="4">Nenhum produto cadastrado.</td></tr>';
+    } else {
+        // Adicionar as linhas da tabela
+        products.forEach(function(product, index) {
+            // Converter quantity para número
+            var quantity = parseInt(product.quantity, 10);
+
+            // Verificar se o valor de 'value' existe e é um número
+            var value = product.value ? parseFloat(product.value).toFixed(2) : 'N/A';
+
+            var row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${product.name}</td>
+                <td>${quantity}</td>
+                <td>R$ ${value}</td>
+            `;
+            tableBody.appendChild(row);
         });
-    </script>
+    }
+});
+
+</script>
+
 
 </body>
 </html>

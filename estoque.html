@@ -3,66 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Estoque</title>
+    <title>Cadastro de Produtos</title>
     <style>
-        /* Estilos do formulário */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f4f4f9;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f4f4f9;
         }
         .form-container {
             background-color: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 400px;
+            width: 400px;  /* Largura ajustada para 400px, igual ao modelo de vendas.html */
+            box-sizing: border-box;  /* Garantir que o preenchimento não afete a largura */
         }
-        .form-container h2 {
+        h2 {
             text-align: center;
             margin-bottom: 20px;
         }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            font-size: 14px;
-            margin-bottom: 5px;
-            display: block;
-        }
-        input[type="text"], input[type="number"], input[type="email"], input[type="submit"], select {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
+        input[type="text"], input[type="number"] {
+            width: 100%; /* Garantir que os inputs ocupem toda a largura da div */
+            padding: 12px; /* Aumentei um pouco o padding */
+            margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
-            box-sizing: border-box;
+            box-sizing: border-box;  /* Garantir que o padding e bordas não estorem */
         }
-        input[type="submit"] {
+        button[type="submit"] {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
             background-color: #007bff;
             color: white;
-            cursor: pointer;
             transition: background-color 0.3s;
+            width: 100%;
+            box-sizing: border-box;
         }
-        input[type="submit"]:hover {
+        button[type="submit"]:hover {
             background-color: #0056b3;
         }
         .back-button {
             background-color: #28a745;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 20px;
             font-size: 16px;
             border-radius: 5px;
             cursor: pointer;
             width: 100%;
             margin-top: 10px;
             transition: background-color 0.3s;
+            box-sizing: border-box;
         }
         .back-button:hover {
             background-color: #218838;
@@ -72,45 +71,39 @@
 <body>
 
     <div class="form-container">
-        <h2>Cadastro de Produto - Estoque</h2>
-        <form id="productForm" method="POST">
-            <div class="form-group">
-                <label for="productName">Nome do Produto</label>
-                <input type="text" id="productName" name="productName" required="">
-            </div>
-            <div class="form-group">
-                <label for="quantity">Quantidade</label>
-                <input type="number" id="quantity" name="quantity" required="" min="1">
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Cadastrar Produto">
-            </div>
+        <h2>Cadastro de Produto</h2>
+        <form id="productForm">
+            <input type="text" id="productName" placeholder="Nome do Produto" required>
+            <input type="number" id="productQuantity" placeholder="Quantidade" required>
+            <input type="number" id="productValue" placeholder="Valor" required>
+            <button type="submit">Cadastrar Produto</button>
         </form>
 
+        <!-- Botão para voltar à página inicial -->
         <button class="back-button" onclick="window.location.href='index.html'">Voltar para Página Inicial</button>
     </div>
 
     <script>
-        // Adicionar um produto ao sessionStorage ao submeter o formulário
+        // Ao submeter o formulário
         document.getElementById('productForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+            event.preventDefault(); // Evitar envio do formulário
 
-            var productName = document.getElementById('productName').value;
-            var quantity = document.getElementById('quantity').value;
+            // Obter os valores do formulário
+            const name = document.getElementById('productName').value;
+            const quantity = document.getElementById('productQuantity').value;
+            const value = parseFloat(document.getElementById('productValue').value);
 
-            // Obter os produtos armazenados ou inicializar um array vazio
-            var products = JSON.parse(sessionStorage.getItem('products')) || [];
+            // Recuperar os produtos armazenados no sessionStorage, se existirem
+            let products = JSON.parse(sessionStorage.getItem('products')) || [];
 
             // Adicionar o novo produto
-            products.push({
-                name: productName,
-                quantity: quantity
-            });
+            products.push({ name, quantity, value });
 
-            // Salvar no sessionStorage
+            // Salvar novamente no sessionStorage
             sessionStorage.setItem('products', JSON.stringify(products));
 
-            alert('Produto cadastrado com sucesso!');
+            // Limpar os campos do formulário
+            document.getElementById('productForm').reset();
         });
     </script>
 
