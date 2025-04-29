@@ -80,6 +80,18 @@
     .delete-btn:hover {
       background-color: #c82333;
     }
+	.checkbox-group label {
+	  display: flex;
+	  align-items: center;
+	  gap: 10px;
+	  font-weight: bold;
+	}
+	.checkbox-group input[type="checkbox"] {
+	  width: auto;
+	  margin: 0;
+	}
+	
+	
   </style>
 </head>
 <body>
@@ -95,12 +107,11 @@
     <label for="highStock">Limite Excesso de Estoque</label>
     <input type="number" id="highStock" min="0" required>
   </div>
-  <div class="form-group">
-    <label for="located">Produto Localizado?</label>
-    <select id="located" required>
-      <option value="true">Sim</option>
-      <option value="false">Não</option>
-    </select>
+  <div class="form-group checkbox-group">
+    <label for="located">
+      <input type="checkbox" id="located" checked>
+      Produto Localizado?
+    </label>
   </div>
   <button onclick="saveParameters()">Salvar Parâmetro</button>
   <button onclick="window.location.href='index.html'" style="background-color: #28a745;">Voltar para Página Inicial</button>
@@ -122,7 +133,7 @@
 
     const lowStock = parseInt(lowStockInput.value);
     const highStock = parseInt(highStockInput.value);
-    const located = locatedInput.value === 'true';
+    const located = locatedInput.checked;
 
     if (isNaN(lowStock)) {
       alert('Preencha corretamente o campo "Limite Estoque Baixo".');

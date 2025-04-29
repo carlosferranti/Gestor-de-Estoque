@@ -20,8 +20,8 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 80%;
-            max-width: 1000px;
+            width: 90%;
+            max-width: 1100px;
             overflow-x: auto;
         }
         h2 {
@@ -73,6 +73,7 @@
                     <th>Nome</th>
                     <th>Quantidade</th>
                     <th>Valor</th>
+                    <th>Localização</th>
                 </tr>
             </thead>
             <tbody>
@@ -85,27 +86,16 @@
 
 <script>
 window.addEventListener('load', function() {
-    // Obter os produtos do localStorage
     var products = JSON.parse(localStorage.getItem('products')) || [];
-
-    // Adicionar um console.log para verificar os produtos carregados
-    console.log("Produtos carregados do localStorage:", products);
-
-    // Obter o corpo da tabela onde os produtos serão inseridos
     var tableBody = document.querySelector('tbody');
 
-    // Verificar se há produtos
     if (products.length === 0) {
-        // Caso não haja produtos, mostrar uma mensagem
-        tableBody.innerHTML = '<tr><td colspan="4">Nenhum produto cadastrado.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="5">Nenhum produto cadastrado.</td></tr>';
     } else {
-        // Adicionar as linhas da tabela
         products.forEach(function(product, index) {
-            // Converter quantity para número
             var quantity = parseInt(product.quantity, 10);
-
-            // Verificar se o valor de 'value' existe e é um número
             var value = product.value ? parseFloat(product.value).toFixed(2) : 'N/A';
+            var location = product.location || 'Não informado';
 
             var row = document.createElement('tr');
             row.innerHTML = `
@@ -113,6 +103,7 @@ window.addEventListener('load', function() {
                 <td>${product.name}</td>
                 <td>${quantity}</td>
                 <td>R$ ${value}</td>
+                <td>${location}</td>
             `;
             tableBody.appendChild(row);
         });

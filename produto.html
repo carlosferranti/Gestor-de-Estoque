@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Estoque</title>
+  <title>Produtos</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -30,12 +30,18 @@
     .form-group {
       margin-bottom: 15px;
     }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
     label {
       display: block;
       margin-bottom: 5px;
       font-weight: bold;
     }
-    input, button {
+    input, select, button {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
@@ -43,6 +49,10 @@
       border-radius: 5px;
       border: 1px solid #ccc;
       box-sizing: border-box;
+    }
+    input[type="checkbox"] {
+      width: auto;
+      margin-top: 0;
     }
     button {
       background-color: #007bff;
@@ -75,7 +85,7 @@
       font-size: 12px;
       border-radius: 4px;
       cursor: pointer;
-      margin-top: 10px; /* Adicionando espaçamento acima do botão */
+      margin-top: 10px;
     }
     .delete-btn:hover {
       background-color: #c82333;
@@ -84,7 +94,6 @@
 </head>
 <body>
 
-<!-- Formulário -->
 <div class="form-container">
   <h2>Cadastro de Produto</h2>
   <div class="form-group">
@@ -99,16 +108,28 @@
     <label for="productValue">Valor (R$)</label>
     <input type="number" id="productValue" step="0.01" min="0" required>
   </div>
+  <div class="form-group">
+    <label for="productLocation">Localização no Depósito</label>
+    <select id="productLocation" required>
+      <option value="">Selecione</option>
+      <option value="CORREDOR A">CORREDOR A</option>
+      <option value="CORREDOR B">CORREDOR B</option>
+      <option value="CORREDOR C">CORREDOR C</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <div class="checkbox-group">
+      <input type="checkbox" id="productLocated">
+      <label for="productLocated">Produto Localizado?</label>
+    </div>
+  </div>
   <button onclick="addProduct()">Cadastrar Produto</button>
   <button onclick="window.location.href='index.html'" style="background-color: #28a745;">Voltar para Página Inicial</button>
 </div>
 
-<!-- Lista de Produtos -->
 <div class="list-container">
   <h2>Produtos Cadastrados</h2>
-  <div id="productsList">
-    <!-- Produtos aparecerão aqui -->
-  </div>
+  <div id="productsList"></div>
 </div>
 
 <script>
@@ -125,6 +146,8 @@
         <strong>Produto:</strong> ${product.name} <br><br>
         <strong>Quantidade:</strong> ${product.quantity} <br><br>
         <strong>Valor:</strong> R$ ${parseFloat(product.value).toFixed(2)} <br><br>
+        <strong>Localização:</strong> ${product.location} <br><br>
+        <strong>Produto Localizado?:</strong> ${product.located ? '✅ Sim' : '❌ Não'} <br><br>
         <button onclick="deleteProduct(${index})" class="delete-btn">Excluir Produto</button>
       `;
       productsList.appendChild(li);
@@ -135,22 +158,26 @@
     const name = document.getElementById('productName').value.trim();
     const quantity = parseInt(document.getElementById('productQuantity').value);
     const value = parseFloat(document.getElementById('productValue').value);
+    const location = document.getElementById('productLocation').value.trim();
+    const located = document.getElementById('productLocated').checked;
 
-    if (!name || isNaN(quantity) || isNaN(value)) {
+    if (!name || isNaN(quantity) || isNaN(value) || !location) {
       alert('Preencha todos os campos corretamente!');
       return;
     }
 
     let products = JSON.parse(localStorage.getItem('products')) || [];
 
-    products.push({ name, quantity, value });
+    products.push({ name, quantity, value, location, located });
 
     localStorage.setItem('products', JSON.stringify(products));
 
     document.getElementById('productName').value = '';
     document.getElementById('productQuantity').value = '';
     document.getElementById('productValue').value = '';
-    
+    document.getElementById('productLocation').value = '';
+    document.getElementById('productLocated').checked = false;
+
     renderProducts();
   }
 
