@@ -85,11 +85,11 @@
 
 <script>
 window.addEventListener('load', function() {
-    // Obter os produtos do sessionStorage
-    var products = JSON.parse(sessionStorage.getItem('products')) || [];
+    // Obter os produtos do localStorage
+    var products = JSON.parse(localStorage.getItem('products')) || [];
 
     // Adicionar um console.log para verificar os produtos carregados
-    console.log("Produtos carregados do sessionStorage:", products);
+    console.log("Produtos carregados do localStorage:", products);
 
     // Obter o corpo da tabela onde os produtos serão inseridos
     var tableBody = document.querySelector('tbody');
@@ -118,9 +118,7 @@ window.addEventListener('load', function() {
         });
     }
 });
-
 </script>
-
 
 </body>
 </html>
