@@ -1,114 +1,170 @@
 <!DOCTYPE html>
-<!-- saved from url=(0072)file:///C:/Users/carlo/OneDrive/%C3%81rea%20de%20Trabalho/DDD/index.html -->
 <html lang="pt-br">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Estoque</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f9;
-        }
-        .form-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 400px; /* Ajustando a largura do formulário */
-        }
-        .form-container h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            font-size: 14px;
-            margin-bottom: 5px;
-            display: block;
-        }
-        input[type="text"], input[type="number"], input[type="submit"], select {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-        input[type="submit"] {
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-        .back-button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            transition: background-color 0.3s;
-        }
-        .back-button:hover {
-            background-color: #218838;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Estoque</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: start;
+      gap: 40px;
+      padding: 40px;
+      margin: 0;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+    .form-container, .list-container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 400px;
+    }
+    h2 {
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      margin-top: 15px;
+      border: none;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .list-container h2 {
+      margin-bottom: 20px;
+    }
+    .parameter-item {
+      border-bottom: 1px solid #ccc;
+      padding: 10px 0;
+      font-size: 14px;
+      text-align: left;
+      position: relative;
+    }
+    .parameter-item:last-child {
+      border-bottom: none;
+    }
+    .delete-btn {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px; /* Adicionando espaçamento acima do botão */
+    }
+    .delete-btn:hover {
+      background-color: #c82333;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="form-container">
-        <h2>Controle de Estoque</h2>
-        <form action="file:///C:/Users/carlo/OneDrive/%C3%81rea%20de%20Trabalho/DDD/index.html#" method="POST">
-            <div class="form-group">
-                <label for="id">ID</label>
-                <input type="number" id="id" name="id" required="" min="1">
-            </div>
-            <div class="form-group">
-                <label for="productName">Nome do Produto</label>
-                <input type="text" id="productName" name="productName" required="">
-            </div>
-            <div class="form-group">
-                <label for="quantity">Quantidade</label>
-                <input type="number" id="quantity" name="quantity" required="" min="1">
-            </div>
-            <div class="form-group">
-                <label for="category">Categoria</label>
-                <select id="category" name="category" required="">
-                    <option value="eletronicos">Eletrônicos</option>
-                    <option value="moveis">Móveis</option>
-                    <option value="roupas">Roupas</option>
-                    <option value="alimentos">Alimentos</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="price">Preço</label>
-                <input type="number" id="price" name="price" required="" step="0.01" min="0">
-            </div>
-            <div class="form-group">
-                <label for="location">Localização no Depósito</label>
-                <input type="text" id="location" name="location" required="">
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Cadastrar Produto">
-            </div>
-        </form>
-        <button class="back-button" onclick="window.location.href='index.html'">Voltar para Página Inicial</button>
-    </div>
+<!-- Formulário -->
+<div class="form-container">
+  <h2>Cadastro de Produto</h2>
+  <div class="form-group">
+    <label for="productName">Nome do Produto</label>
+    <input type="text" id="productName" required>
+  </div>
+  <div class="form-group">
+    <label for="productQuantity">Quantidade</label>
+    <input type="number" id="productQuantity" min="0" required>
+  </div>
+  <div class="form-group">
+    <label for="productValue">Valor (R$)</label>
+    <input type="number" id="productValue" step="0.01" min="0" required>
+  </div>
+  <button onclick="addProduct()">Cadastrar Produto</button>
+  <button onclick="window.location.href='index.html'" style="background-color: #28a745;">Voltar para Página Inicial</button>
+</div>
+
+<!-- Lista de Produtos -->
+<div class="list-container">
+  <h2>Produtos Cadastrados</h2>
+  <div id="productsList">
+    <!-- Produtos aparecerão aqui -->
+  </div>
+</div>
+
+<script>
+  function renderProducts() {
+    const productsList = document.getElementById('productsList');
+    productsList.innerHTML = '';
+
+    const products = JSON.parse(localStorage.getItem('products')) || [];
+
+    products.forEach((product, index) => {
+      const li = document.createElement('div');
+      li.className = 'parameter-item';
+      li.innerHTML = `
+        <strong>Produto:</strong> ${product.name} <br><br>
+        <strong>Quantidade:</strong> ${product.quantity} <br><br>
+        <strong>Valor:</strong> R$ ${parseFloat(product.value).toFixed(2)} <br><br>
+        <button onclick="deleteProduct(${index})" class="delete-btn">Excluir Produto</button>
+      `;
+      productsList.appendChild(li);
+    });
+  }
+
+  function addProduct() {
+    const name = document.getElementById('productName').value.trim();
+    const quantity = parseInt(document.getElementById('productQuantity').value);
+    const value = parseFloat(document.getElementById('productValue').value);
+
+    if (!name || isNaN(quantity) || isNaN(value)) {
+      alert('Preencha todos os campos corretamente!');
+      return;
+    }
+
+    let products = JSON.parse(localStorage.getItem('products')) || [];
+
+    products.push({ name, quantity, value });
+
+    localStorage.setItem('products', JSON.stringify(products));
+
+    document.getElementById('productName').value = '';
+    document.getElementById('productQuantity').value = '';
+    document.getElementById('productValue').value = '';
+    
+    renderProducts();
+  }
+
+  function deleteProduct(index) {
+    if (confirm('Tem certeza que deseja excluir este produto?')) {
+      let products = JSON.parse(localStorage.getItem('products')) || [];
+      products.splice(index, 1);
+      localStorage.setItem('products', JSON.stringify(products));
+      renderProducts();
+    }
+  }
+
+  window.onload = renderProducts;
+</script>
 
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatório de Produtos</title>
+    <title>Relatório</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -65,45 +65,60 @@
 <body>
 
     <div class="table-container">
-        <h2>Relatório de Produtos</h2>
+        <h2>Relatório de Estoque</h2>
         <table>
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Nome</th>
-                    <th>Preço</th>
                     <th>Quantidade</th>
-                    <th>Localização</th>
+                    <th>Valor</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Exemplo de dados da tabela -->
-                <tr>
-                    <td>1</td>
-                    <td>Produto A</td>
-                    <td>R$ 100,00</td>
-                    <td>50</td>
-                    <td>Depósito 1</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Produto B</td>
-                    <td>R$ 200,00</td>
-                    <td>30</td>
-                    <td>Depósito 2</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Produto C</td>
-                    <td>R$ 150,00</td>
-                    <td>20</td>
-                    <td>Depósito 3</td>
-                </tr>
+                <!-- Os produtos serão carregados aqui -->
             </tbody>
         </table>
 
         <button class="back-button" onclick="window.location.href='index.html'">Voltar para Página Inicial</button>
     </div>
+
+<script>
+window.addEventListener('load', function() {
+    // Obter os produtos do localStorage
+    var products = JSON.parse(localStorage.getItem('products')) || [];
+
+    // Adicionar um console.log para verificar os produtos carregados
+    console.log("Produtos carregados do localStorage:", products);
+
+    // Obter o corpo da tabela onde os produtos serão inseridos
+    var tableBody = document.querySelector('tbody');
+
+    // Verificar se há produtos
+    if (products.length === 0) {
+        // Caso não haja produtos, mostrar uma mensagem
+        tableBody.innerHTML = '<tr><td colspan="4">Nenhum produto cadastrado.</td></tr>';
+    } else {
+        // Adicionar as linhas da tabela
+        products.forEach(function(product, index) {
+            // Converter quantity para número
+            var quantity = parseInt(product.quantity, 10);
+
+            // Verificar se o valor de 'value' existe e é um número
+            var value = product.value ? parseFloat(product.value).toFixed(2) : 'N/A';
+
+            var row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${product.name}</td>
+                <td>${quantity}</td>
+                <td>R$ ${value}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+});
+</script>
 
 </body>
 </html>
