@@ -104,88 +104,93 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    const messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
-    const modalMessage = document.getElementById('modalMessage');
+    const messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
+    const modalMessage = document.getElementById('modalMessage');
 
-    function showModalMessage(message) {
-        modalMessage.innerHTML = message;
-        messageModal.show();
-    }
+    function showModalMessage(message) {
+        modalMessage.innerHTML = message;
+        messageModal.show();
+    }
 
-    function loadProducts() {
-        let products = JSON.parse(localStorage.getItem('products')) || [];
-        let productSelect = document.getElementById('productSelect');
-        productSelect.innerHTML = '<option value="">Selecione um produto</option>';
+    function loadProducts() {
+        let products = JSON.parse(localStorage.getItem('products')) || [];
+        let productSelect = document.getElementById('productSelect');
+        productSelect.innerHTML = '<option value="">Selecione um produto</option>';
 
-        products.forEach(product => {
-            let option = document.createElement('option');
-            option.value = product.name;
-            option.textContent = product.name;
-            productSelect.appendChild(option);
-        });
-    }
+        // Ordena os produtos alfabeticamente pelo nome
+        products.sort((a, b) => {
+            return a.name.localeCompare(b.name);
+        });
 
-    function analyzeStock() {
-        let productName = document.getElementById('productSelect').value;
-        let quantityInput = document.getElementById('quantity').value;
+        products.forEach(product => {
+            let option = document.createElement('option');
+            option.value = product.name;
+            option.textContent = product.name;
+            productSelect.appendChild(option);
+        });
+    }
 
-        if (!productName) {
-            showModalMessage('Selecione um produto!');
-            return;
-        }
+    function analyzeStock() {
+        let productName = document.getElementById('productSelect').value;
+        let quantityInput = document.getElementById('quantity').value;
 
-        if (quantityInput === '') {
-            showModalMessage('Informe a quantidade!');
-            return;
-        }
+        if (!productName) {
+            showModalMessage('Selecione um produto!');
+            return;
+        }
 
-        let quantityToSell = parseInt(quantityInput);
-        if (isNaN(quantityToSell) || quantityToSell <= 0) {
-            showModalMessage('Quantidade inválida!');
-            return;
-        }
+        if (quantityInput === '') {
+            showModalMessage('Informe a quantidade!');
+            return;
+        }
 
-        let products = JSON.parse(localStorage.getItem('products')) || [];
-        let product = products.find(p => p.name === productName);
+        let quantityToSell = parseInt(quantityInput);
+        if (isNaN(quantityToSell) || quantityToSell <= 0) {
+            showModalMessage('Quantidade inválida!');
+            return;
+        }
 
-        if (!product) {
-            showModalMessage('Produto não encontrado!');
-            return;
-        }
+        let products = JSON.parse(localStorage.getItem('products')) || [];
+        let product = products.find(p => p.name === productName);
 
-        if (product.quantity < quantityToSell) {
-            showModalMessage(
-                `Estoque insuficiente. Quantidade disponível: ${product.quantity}`
-            );
-            return;
-        }
+        if (!product) {
+            showModalMessage('Produto não encontrado!');
+            return;
+        }
 
-        product.quantity -= quantityToSell;
+        if (product.quantity < quantityToSell) {
+            showModalMessage(
+                `Estoque insuficiente. Quantidade disponível: ${product.quantity}`
+            );
+            return;
+        }
 
-        // Atualiza o estoque
-        localStorage.setItem('products', JSON.stringify(products));
+        product.quantity -= quantityToSell;
 
-        // Mensagem base de sucesso
-        let message = 'Venda realizada com sucesso. Estoque atualizado.';
-        let extraMessage = `Quantidade restante em estoque: ${product.quantity}`;
+        // Atualiza o estoque
+        localStorage.setItem('products', JSON.stringify(products));
 
-        // Verificações de estoque mínimo e máximo (assumindo que essas propriedades existem nos seus objetos de produto)
-        if (product.minStock !== undefined && product.quantity < product.minStock) {
-            extraMessage += `<br><span style="color: red;">⚠ Estoque Baixo: mínimo recomendado é ${product.minStock}</span>`;
-        } else if (product.maxStock !== undefined && product.quantity > product.maxStock) {
-            extraMessage += `<br><span style="color: orange;">⚠ Excesso de Estoque: máximo permitido é ${product.maxStock}</span>`;
-        }
+        // Mensagem base de sucesso
+        let message = 'Venda realizada com sucesso. Estoque atualizado.';
+        let extraMessage = `Quantidade restante em estoque: ${product.quantity}`;
 
-        showModalMessage(message + (extraMessage ? `<br><small>${extraMessage}</small>` : ''));
-        loadProducts();
+        // Verificações de estoque mínimo e máximo (assumindo que essas propriedades existem nos seus objetos de produto)
+        if (product.minStock !== undefined && product.quantity < product.minStock) {
+            extraMessage += `<br><span style="color: red;">⚠ Estoque Baixo: mínimo recomendado é ${product.minStock}</span>`;
+        } else if (product.maxStock !== undefined && product.quantity > product.maxStock) {
+            extraMessage += `<br><span style="color: orange;">⚠ Excesso de Estoque: máximo permitido é ${product.maxStock}</span>`;
+        }
 
-        // Limpa a mensagem de resultado após alguns segundos (opcional, já que estamos usando modal)
-        document.getElementById('quantity').value = ''; // Limpa o campo de quantidade após a venda
-    }
+        showModalMessage(message + (extraMessage ? `<br><small>${extraMessage}</small>` : ''));
+        loadProducts();
 
-    window.onload = function () {
-        loadProducts();
-    };
+        // Limpa a mensagem de resultado após alguns segundos (opcional, já que estamos usando modal)
+        document.getElementById('quantity').value = ''; // Limpa o campo de quantidade após a venda
+    }
+
+    window.onload = function () {
+        loadProducts();
+    };
 </script>
 
 </body>
