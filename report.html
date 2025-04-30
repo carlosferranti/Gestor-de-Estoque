@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatório</title>
+    <title>Relatório de Estoque</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -70,14 +70,14 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nome</th>
+                    <th>Produto</th>
                     <th>Quantidade</th>
                     <th>Valor</th>
                     <th>Localização</th>
+                    <th>Produto Localizado</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Os produtos serão carregados aqui -->
             </tbody>
         </table>
 
@@ -89,13 +89,27 @@ window.addEventListener('load', function() {
     var products = JSON.parse(localStorage.getItem('products')) || [];
     var tableBody = document.querySelector('tbody');
 
+    // Ordenar os produtos por nome (ordem alfabética)
+    products.sort(function(a, b) {
+        var nameA = a.name.toUpperCase();
+        var nameB = b.name.toUpperCase();
+        if (nameA < nameB) {
+            return -1;
+        }
+        if (nameA > nameB) {
+            return 1;
+        }
+        return 0;
+    });
+
     if (products.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="5">Nenhum produto cadastrado.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="6">Nenhum produto cadastrado.</td></tr>';
     } else {
         products.forEach(function(product, index) {
             var quantity = parseInt(product.quantity, 10);
             var value = product.value ? parseFloat(product.value).toFixed(2) : 'N/A';
             var location = product.location || 'Não informado';
+            var located = product.located ? 'Sim' : 'Não'; // Novo campo
 
             var row = document.createElement('tr');
             row.innerHTML = `
@@ -104,6 +118,7 @@ window.addEventListener('load', function() {
                 <td>${quantity}</td>
                 <td>R$ ${value}</td>
                 <td>${location}</td>
+                <td>${located}</td>
             `;
             tableBody.appendChild(row);
         });
