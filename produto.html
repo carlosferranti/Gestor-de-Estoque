@@ -96,7 +96,8 @@
 
 <!-- Botões principais (embaixo da tabela e acima do botão voltar) -->
 <div class="button-container">
-    <button onclick="addProduct()">Cadastrar Produto</button>
+	<button onclick="newProduct()">Novo Produto</button>
+    <button onclick="addProduct()">Salvar Produto</button>
     <button onclick="renderProducts()">Atualizar</button>
     <button onclick="findProduct()">Localizar</button>
     <button onclick="window.location.href='report.html'" class="btn btn-primary">Relatório</button>
@@ -130,6 +131,10 @@
         showMessage(`Produtos carregados: ${products.length}`);
     }
 
+    function newProduct() {
+		showMessage("Evento não realizado ainda");
+    }
+	
     function addProduct() {
         const codigo = prompt("Digite o código do produto:");
         const nome = prompt("Digite o nome do produto:");
