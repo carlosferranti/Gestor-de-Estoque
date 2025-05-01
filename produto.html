@@ -1,241 +1,193 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Produtos</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <title>Gerenciador de Produtos</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: start;
-            gap: 40px;
-            padding: 40px;
-            margin: 0;
-            height: 100vh;
-            box-sizing: border-box;
+            margin: 40px;
         }
-        .form-container, .list-container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            width: 400px;
-        }
-        h2 {
+        h1 {
             text-align: center;
         }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin-top: 10px;
         }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input, select, button {
-            width: 100%;
+        th, td {
+            border: 1px solid #dddddd;
             padding: 10px;
-            margin-top: 5px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
+            text-align: left;
         }
-        input[type="checkbox"] {
-            width: auto;
-            margin-top: 0;
+        th {
+            background-color: #f2f2f2;
         }
-        button {
-            background-color: #007bff;
-            color: white;
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .button-container button {
+            flex: 1 1 calc(20% - 10px);
+            min-width: 120px;
+            padding: 10px;
+            font-size: 14px;
             cursor: pointer;
-            margin-top: 15px;
+            background-color: #007BFF; /* Azul */
+            color: white;
             border: none;
+            border-radius: 6px;
+            text-align: center;
         }
-        button:hover {
+        .button-container button:hover {
             background-color: #0056b3;
         }
-        .delete-btn {
-            background-color: #dc3545;
+        .back-button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .back-button {
+            flex: 1;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            background-color: #4CAF50; /* Verde */
             color: white;
             border: none;
-            padding: 5px 10px;
-            font-size: 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
+            border-radius: 6px;
+            text-align: center;
+            text-decoration: none;
         }
-        .delete-btn:hover {
-            background-color: #c82333;
+        .back-button:hover {
+            background-color: #45a049;
+        }
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #333;
         }
     </style>
 </head>
 <body>
 
-<div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Aviso</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="modalMessage">
-                </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
+<h1>Gerenciador de Produtos</h1>
 
-<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirmação</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                Tem certeza que deseja excluir este produto?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger" onclick="confirmDeleteProduct()">Excluir</button>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- Tabela de produtos -->
+<table id="productTable">
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Nome</th>
+            <th>Preço</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Produtos serão inseridos aqui -->
+    </tbody>
+</table>
 
-<div class="form-container">
-    <h2>Cadastro de Produto</h2>
-    <div class="form-group">
-        <label for="productName">Nome do Produto</label>
-        <input type="text" id="productName" required>
-    </div>
-    <div class="form-group">
-        <label for="productQuantity">Quantidade</label>
-        <input type="number" id="productQuantity" min="0" required>
-    </div>
-    <div class="form-group">
-        <label for="productValue">Valor (R$)</label>
-        <input type="number" id="productValue" step="0.01" min="0" required>
-    </div>
-    <div class="form-group">
-        <label for="productLocation">Localização no Depósito</label>
-        <select id="productLocation" required>
-            <option value="">Selecione</option>
-            <option value="CORREDOR A">CORREDOR A</option>
-            <option value="CORREDOR B">CORREDOR B</option>
-            <option value="CORREDOR C">CORREDOR C</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <div class="checkbox-group">
-            <input type="checkbox" id="productLocated">
-            <label for="productLocated">Produto Localizado?</label>
-        </div>
-    </div>
+<!-- Mensagem de status -->
+<div id="message"></div>
+
+<!-- Botões principais (embaixo da tabela e acima do botão voltar) -->
+<div class="button-container">
     <button onclick="addProduct()">Cadastrar Produto</button>
-    <button onclick="window.location.href='index.html'" style="background-color: #28a745;">Voltar para Página Inicial</button>
+    <button onclick="renderProducts()">Atualizar</button>
+    <button onclick="findProduct()">Localizar</button>
+    <button onclick="window.location.href='report.html'" class="btn btn-primary">Relatório</button>
+    <button onclick="openMovement()">Movimentação</button>
 </div>
 
-<div class="list-container">
-    <h2>Produtos Cadastrados</h2>
-    <div id="productsList"></div>
+<!-- Botão voltar -->
+<div class="back-button-container">
+    <a href="index.html" class="back-button">Voltar à Página Inicial</a>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    const messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
-    const modalMessage = document.getElementById('modalMessage');
-    const deleteConfirmationModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
-    let productIndexToDelete = null;
-
-    function showModalMessage(message) {
-        document.getElementById('modalMessage').innerHTML = message;
-        messageModal.show();
-    }
-
-    function openDeleteConfirmation(index) {
-        productIndexToDelete = index;
-        deleteConfirmationModal.show();
-    }
-
-    function confirmDeleteProduct() {
-        if (productIndexToDelete !== null) {
-            let products = JSON.parse(localStorage.getItem('products')) || [];
-            products.splice(productIndexToDelete, 1);
-            localStorage.setItem('products', JSON.stringify(products));
-            showModalMessage('Produto excluído com sucesso!');
-            renderProducts();
-            productIndexToDelete = null; // Resetar o índice
-        }
-        deleteConfirmationModal.hide();
-    }
+    let products = [
+        { codigo: 1, nome: 'Produto A', preco: 10.50 },
+        { codigo: 2, nome: 'Produto B', preco: 23.90 },
+        { codigo: 3, nome: 'Produto C', preco: 7.75 }
+    ];
 
     function renderProducts() {
-        const productsList = document.getElementById('productsList');
-        productsList.innerHTML = '';
-
-        const products = JSON.parse(localStorage.getItem('products')) || [];
-
-        products.forEach((product, index) => {
-            const li = document.createElement('div');
-            li.className = 'parameter-item';
-            li.innerHTML = `
-                <strong>Produto:</strong> ${product.name} <br><br>
-                <strong>Quantidade:</strong> ${product.quantity} <br><br>
-                <strong>Valor:</strong> R$ ${parseFloat(product.value).toFixed(2)} <br><br>
-                <strong>Localização:</strong> ${product.location} <br><br>
-                <strong>Produto Localizado?:</strong> ${product.located ? '✅ Sim' : '❌ Não'} <br><br>
-                <button onclick="openDeleteConfirmation(${index})" class="delete-btn">Excluir Produto</button>
+        const tableBody = document.querySelector("#productTable tbody");
+        tableBody.innerHTML = "";
+        products.forEach(prod => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${prod.codigo}</td>
+                <td>${prod.nome}</td>
+                <td>R$ ${prod.preco.toFixed(2)}</td>
             `;
-            productsList.appendChild(li);
+            tableBody.appendChild(row);
         });
+        showMessage(`Produtos carregados: ${products.length}`);
     }
 
     function addProduct() {
-        const name = document.getElementById('productName').value.trim();
-        const quantity = parseInt(document.getElementById('productQuantity').value);
-        const value = parseFloat(document.getElementById('productValue').value);
-        const location = document.getElementById('productLocation').value.trim();
-        const located = document.getElementById('productLocated').checked;
+        const codigo = prompt("Digite o código do produto:");
+        const nome = prompt("Digite o nome do produto:");
+        const preco = prompt("Digite o preço do produto:");
 
-        if (!name || isNaN(quantity) || isNaN(value) || !location) {
-            showModalMessage('Preencha todos os campos corretamente!');
-            return;
+        if (codigo && nome && preco && !isNaN(preco)) {
+            products.push({
+                codigo: parseInt(codigo),
+                nome,
+                preco: parseFloat(preco)
+            });
+            renderProducts();
+            showMessage("Produto cadastrado com sucesso!");
+        } else {
+            showMessage("Dados inválidos. Produto não cadastrado.");
         }
-
-        let products = JSON.parse(localStorage.getItem('products')) || [];
-
-        products.push({ name, quantity, value, location, located });
-
-        localStorage.setItem('products', JSON.stringify(products));
-
-        document.getElementById('productName').value = '';
-        document.getElementById('productQuantity').value = '';
-        document.getElementById('productValue').value = '';
-        document.getElementById('productLocation').value = '';
-        document.getElementById('productLocated').checked = false;
-
-        showModalMessage('Produto cadastrado com sucesso!');
-        renderProducts();
     }
 
-    window.onload = renderProducts;
+    function findProduct() {
+        const termo = prompt("Digite o nome ou código do produto para localizar:");
+        const resultado = products.filter(p =>
+            p.nome.toLowerCase().includes(termo.toLowerCase()) ||
+            p.codigo.toString() === termo
+        );
+
+        const tableBody = document.querySelector("#productTable tbody");
+        tableBody.innerHTML = "";
+
+        if (resultado.length > 0) {
+            resultado.forEach(prod => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${prod.codigo}</td>
+                    <td>${prod.nome}</td>
+                    <td>R$ ${prod.preco.toFixed(2)}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            showMessage(`Encontrado(s): ${resultado.length} produto(s).`);
+        } else {
+            showMessage("Nenhum produto encontrado.");
+        }
+    }
+
+    function generateReport() {
+        showMessage("Função de relatório ainda não implementada.");
+    }
+
+    function openMovement() {
+        showMessage("Função de movimentação ainda não implementada.");
+    }
+
+    function showMessage(msg) {
+        document.getElementById("message").textContent = msg;
+    }
+
+    // Renderizar produtos ao carregar a página
+    renderProducts();
 </script>
 
 </body>
