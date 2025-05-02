@@ -8,22 +8,33 @@
             font-family: Arial, sans-serif;
             margin: 40px;
         }
+
         h1 {
             text-align: center;
         }
-        table {
+
+        .form-container {
+            margin: 20px 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
-        th, td {
-            border: 1px solid #dddddd;
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
+
         .button-container {
             display: flex;
             flex-wrap: wrap;
@@ -31,41 +42,47 @@
             justify-content: center;
             margin-top: 20px;
         }
+
         .button-container button {
             flex: 1 1 calc(20% - 10px);
             min-width: 120px;
             padding: 10px;
             font-size: 14px;
             cursor: pointer;
-            background-color: #007BFF; /* Azul */
+            background-color: #007BFF;
             color: white;
             border: none;
             border-radius: 6px;
             text-align: center;
         }
+
         .button-container button:hover {
             background-color: #0056b3;
         }
+
         .back-button-container {
             display: flex;
             justify-content: center;
             margin-top: 20px;
         }
+
         .back-button {
             flex: 1;
             padding: 10px 20px;
             font-size: 14px;
             cursor: pointer;
-            background-color: #4CAF50; /* Verde */
+            background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 6px;
             text-align: center;
             text-decoration: none;
         }
+
         .back-button:hover {
             background-color: #45a049;
         }
+
         #message {
             margin-top: 15px;
             font-weight: bold;
@@ -77,122 +94,176 @@
 
 <h1>Gerenciador de Produtos</h1>
 
-<!-- Tabela de produtos -->
-<table id="productTable">
-    <thead>
-        <tr>
-            <th>Código</th>
-            <th>Nome</th>
-            <th>Preço</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Produtos serão inseridos aqui -->
-    </tbody>
-</table>
+<div class="form-container">
+    <div class="form-group">
+        <label for="codigo">Código</label>
+        <input type="text" id="codigo" placeholder="Código gerado automaticamente" disabled>
+    </div>
+    <div class="form-group">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" placeholder="Digite o nome do produto">
+    </div>
+    <div class="form-group">
+        <label for="preco">Preço</label>
+        <input type="text" id="preco" placeholder="Digite o preço do produto" oninput="this.value = this.value.replace(/[^0-9,]/g, '')">
+    </div>
+    <div class="form-group">
+        <label for="quantidade">Quantidade</label>
+        <input type="text" id="quantidade" placeholder="Digite a quantidade do produto" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+    </div>
+    <div class="form-group">
+        <label for="localizado">
+            <input type="checkbox" id="localizado"> Produto Localizado
+        </label>
+    </div>
+</div>
 
-<!-- Mensagem de status -->
 <div id="message"></div>
 
-<!-- Botões principais (embaixo da tabela e acima do botão voltar) -->
 <div class="button-container">
-	<button onclick="newProduct()">Novo Produto</button>
-    <button onclick="addProduct()">Salvar Produto</button>
-    <button onclick="renderProducts()">Atualizar</button>
+    <button onclick="newProduct()">Novo</button>
+    <button onclick="addProduct()">Salvar</button>
+    <button onclick="updateProduct()">Atualizar</button>
     <button onclick="findProduct()">Localizar</button>
-    <button onclick="window.location.href='report.html'" class="btn btn-primary">Relatório</button>
+    <button onclick="window.location.href='report.html'">Relatório</button>
     <button onclick="openMovement()">Movimentação</button>
 </div>
 
-<!-- Botão voltar -->
 <div class="back-button-container">
     <a href="index.html" class="back-button">Voltar à Página Inicial</a>
 </div>
 
 <script>
-    let products = [
-        { codigo: 1, nome: 'Produto A', preco: 10.50 },
-        { codigo: 2, nome: 'Produto B', preco: 23.90 },
-        { codigo: 3, nome: 'Produto C', preco: 7.75 }
-    ];
-
-    function renderProducts() {
-        const tableBody = document.querySelector("#productTable tbody");
-        tableBody.innerHTML = "";
-        products.forEach(prod => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${prod.codigo}</td>
-                <td>${prod.nome}</td>
-                <td>R$ ${prod.preco.toFixed(2)}</td>
-            `;
-            tableBody.appendChild(row);
-        });
-        showMessage(`Produtos carregados: ${products.length}`);
-    }
-
     function newProduct() {
-		showMessage("Evento não realizado ainda");
+        document.getElementById("codigo").value = generateUUID();
+        document.getElementById("nome").value = "";
+        document.getElementById("preco").value = "";
+        document.getElementById("quantidade").value = "";
+        document.getElementById("localizado").checked = false;
+        document.getElementById("nome").focus();
     }
-	
-    function addProduct() {
-        const codigo = prompt("Digite o código do produto:");
-        const nome = prompt("Digite o nome do produto:");
-        const preco = prompt("Digite o preço do produto:");
 
-        if (codigo && nome && preco && !isNaN(preco)) {
-            products.push({
-                codigo: parseInt(codigo),
-                nome,
-                preco: parseFloat(preco)
-            });
-            renderProducts();
-            showMessage("Produto cadastrado com sucesso!");
+    function addProduct() {
+        const codigo = document.getElementById("codigo").value;
+        const nome = document.getElementById("nome").value;
+        let preco = document.getElementById("preco").value;
+        const quantidade = document.getElementById("quantidade").value;
+        const localizado = document.getElementById("localizado").checked;
+
+        if (!codigo || !nome || !preco || !quantidade) {
+            alert("Por favor, preencha todos os campos.");
+            return;
+        }
+
+        preco = preco.replace(',', '.').trim();
+        const precoDecimal = parseFloat(preco);
+        const quantidadeInt = parseInt(quantidade, 10);
+
+        if (isNaN(precoDecimal) || isNaN(quantidadeInt)) {
+            alert("Preço ou quantidade inválidos.");
+            return;
+        }
+
+        const products = JSON.parse(localStorage.getItem('products')) || [];
+        products.push({
+            id: codigo,
+            name: nome,
+            value: precoDecimal.toFixed(2),
+            quantity: quantidadeInt,
+            located: localizado
+        });
+
+        localStorage.setItem('products', JSON.stringify(products));
+        newProduct();
+
+        const messageElement = document.getElementById("message");
+        messageElement.innerText = "Produto salvo com sucesso!";
+        messageElement.style.color = "green";
+    }
+
+    function updateProduct() {
+        const codigo = document.getElementById("codigo").value;
+        const nome = document.getElementById("nome").value;
+        let preco = document.getElementById("preco").value;
+        const quantidade = document.getElementById("quantidade").value;
+        const localizado = document.getElementById("localizado").checked;
+
+        if (!codigo || !nome || !preco || !quantidade) {
+            alert("Por favor, preencha todos os campos.");
+            return;
+        }
+
+        preco = preco.replace(',', '.').trim();
+        const precoDecimal = parseFloat(preco);
+        const quantidadeInt = parseInt(quantidade, 10);
+
+        if (isNaN(precoDecimal) || isNaN(quantidadeInt)) {
+            alert("Preço ou quantidade inválidos.");
+            return;
+        }
+
+        const products = JSON.parse(localStorage.getItem('products')) || [];
+        const productIndex = products.findIndex(p => p.id === codigo);
+
+        if (productIndex !== -1) {
+            products[productIndex] = {
+                ...products[productIndex],
+                name: nome,
+                value: precoDecimal.toFixed(2),
+                quantity: quantidadeInt,
+                located: localizado
+            };
+
+            localStorage.setItem('products', JSON.stringify(products));
+
+            const messageElement = document.getElementById("message");
+            messageElement.innerText = "Produto atualizado com sucesso!";
+            messageElement.style.color = "green";
         } else {
-            showMessage("Dados inválidos. Produto não cadastrado.");
+            alert("Produto não encontrado para atualização.");
         }
     }
 
     function findProduct() {
-        const termo = prompt("Digite o nome ou código do produto para localizar:");
-        const resultado = products.filter(p =>
-            p.nome.toLowerCase().includes(termo.toLowerCase()) ||
-            p.codigo.toString() === termo
+        const searchTerm = prompt("Digite parte do nome ou código do produto que deseja localizar:");
+
+        if (!searchTerm) {
+            alert("Por favor, insira um termo de busca.");
+            return;
+        }
+
+        const products = JSON.parse(localStorage.getItem('products')) || [];
+        const matchingProducts = products.filter(product =>
+            (product.name && product.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (product.id && product.id.includes(searchTerm))
         );
 
-        const tableBody = document.querySelector("#productTable tbody");
-        tableBody.innerHTML = "";
+        if (matchingProducts.length > 0) {
+            const firstProduct = matchingProducts[0];
+            document.getElementById("codigo").value = firstProduct.id;
+            document.getElementById("nome").value = firstProduct.name;
+            document.getElementById("preco").value = firstProduct.value.replace('.', ',');
+            document.getElementById("quantidade").value = firstProduct.quantity;
+            document.getElementById("localizado").checked = firstProduct.located || false;
 
-        if (resultado.length > 0) {
-            resultado.forEach(prod => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${prod.codigo}</td>
-                    <td>${prod.nome}</td>
-                    <td>R$ ${prod.preco.toFixed(2)}</td>
-                `;
-                tableBody.appendChild(row);
-            });
-            showMessage(`Encontrado(s): ${resultado.length} produto(s).`);
+            const messageElement = document.getElementById("message");
+            messageElement.innerText = "Produto(s) localizado(s) com sucesso!";
+            messageElement.style.color = "green";
         } else {
-            showMessage("Nenhum produto encontrado.");
+            alert("Nenhum produto encontrado.");
         }
     }
 
-    function generateReport() {
-        showMessage("Função de relatório ainda não implementada.");
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
     }
 
     function openMovement() {
-        showMessage("Função de movimentação ainda não implementada.");
+        alert("Funcionalidade de movimentação ainda não implementada.");
     }
-
-    function showMessage(msg) {
-        document.getElementById("message").textContent = msg;
-    }
-
-    // Renderizar produtos ao carregar a página
-    renderProducts();
 </script>
 
 </body>

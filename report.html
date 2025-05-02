@@ -69,11 +69,12 @@
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>#</th>
+					<th>Código</th> <!-- Nova coluna -->
                     <th>Produto</th>
                     <th>Quantidade</th>
                     <th>Valor</th>
-                    <th>Localização</th>
+                    <!-- <th>Localização</th> -->
                     <th>Produto Localizado</th>
                 </tr>
             </thead>
@@ -108,16 +109,17 @@ window.addEventListener('load', function() {
         products.forEach(function(product, index) {
             var quantity = parseInt(product.quantity, 10);
             var value = product.value ? parseFloat(product.value).toFixed(2) : 'N/A';
-            var location = product.location || 'Não informado';
+            //var location = product.location || 'Não informado';
             var located = product.located ? 'Sim' : 'Não'; // Novo campo
 
             var row = document.createElement('tr');
             row.innerHTML = `
                 <td>${index + 1}</td>
+				<td>${product.id}</td> <!-- Exibindo o código UUID -->
                 <td>${product.name}</td>
                 <td>${quantity}</td>
                 <td>R$ ${value}</td>
-                <td>${location}</td>
+                <!-- <td>${location}</td> -->
                 <td>${located}</td>
             `;
             tableBody.appendChild(row);
