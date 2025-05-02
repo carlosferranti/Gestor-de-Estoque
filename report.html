@@ -71,9 +71,9 @@
                 <tr>
                     <th>#</th>
 					<th>Código</th> <!-- Nova coluna -->
-                    <th>Produto</th>
-                    <th>Quantidade</th>
+                    <th>Nome</th>                   
                     <th>Valor</th>
+					 <th>Quantidade</th>
                     <!-- <th>Localização</th> -->
                     <th>Produto Localizado</th>
                 </tr>
@@ -117,8 +117,8 @@ window.addEventListener('load', function() {
                 <td>${index + 1}</td>
 				<td>${product.id}</td> <!-- Exibindo o código UUID -->
                 <td>${product.name}</td>
-                <td>${quantity}</td>
-                <td>R$ ${value}</td>
+				<td>R$ ${value}</td>
+                <td>${quantity}</td>                
                 <!-- <td>${location}</td> -->
                 <td>${located}</td>
             `;

@@ -104,8 +104,8 @@
         <input type="text" id="nome" placeholder="Digite o nome do produto">
     </div>
     <div class="form-group">
-        <label for="preco">Preço</label>
-        <input type="text" id="preco" placeholder="Digite o preço do produto" oninput="this.value = this.value.replace(/[^0-9,]/g, '')">
+        <label for="preco">Valor</label>
+        <input type="text" id="preco" placeholder="Digite o valor do produto" oninput="this.value = this.value.replace(/[^0-9,]/g, '')">
     </div>
     <div class="form-group">
         <label for="quantidade">Quantidade</label>
@@ -144,42 +144,49 @@
     }
 
     function addProduct() {
-        const codigo = document.getElementById("codigo").value;
-        const nome = document.getElementById("nome").value;
-        let preco = document.getElementById("preco").value;
-        const quantidade = document.getElementById("quantidade").value;
-        const localizado = document.getElementById("localizado").checked;
+		const codigo = document.getElementById("codigo").value;
+		const nome = document.getElementById("nome").value;
+		let preco = document.getElementById("preco").value;
+		const quantidade = document.getElementById("quantidade").value;
+		const localizado = document.getElementById("localizado").checked;
 
-        if (!codigo || !nome || !preco || !quantidade) {
-            alert("Por favor, preencha todos os campos.");
-            return;
-        }
+		if (!codigo || !nome || !preco || !quantidade) {
+			alert("Por favor, preencha todos os campos.");
+			return;
+		}
 
-        preco = preco.replace(',', '.').trim();
-        const precoDecimal = parseFloat(preco);
-        const quantidadeInt = parseInt(quantidade, 10);
+		preco = preco.replace(',', '.').trim();
+		const precoDecimal = parseFloat(preco);
+		const quantidadeInt = parseInt(quantidade, 10);
 
-        if (isNaN(precoDecimal) || isNaN(quantidadeInt)) {
-            alert("Preço ou quantidade inválidos.");
-            return;
-        }
+		if (isNaN(precoDecimal) || isNaN(quantidadeInt)) {
+			alert("Preço ou quantidade inválidos.");
+			return;
+		}
 
-        const products = JSON.parse(localStorage.getItem('products')) || [];
-        products.push({
-            id: codigo,
-            name: nome,
-            value: precoDecimal.toFixed(2),
-            quantity: quantidadeInt,
-            located: localizado
-        });
+		const products = JSON.parse(localStorage.getItem('products')) || [];
+		products.push({
+			id: codigo,
+			name: nome,
+			value: precoDecimal.toFixed(2),
+			quantity: quantidadeInt,
+			located: localizado
+		});
 
-        localStorage.setItem('products', JSON.stringify(products));
-        newProduct();
+		localStorage.setItem('products', JSON.stringify(products));
 
-        const messageElement = document.getElementById("message");
-        messageElement.innerText = "Produto salvo com sucesso!";
-        messageElement.style.color = "green";
-    }
+		// Limpa os campos após salvar
+		document.getElementById("codigo").value = "";
+		document.getElementById("nome").value = "";
+		document.getElementById("preco").value = "";
+		document.getElementById("quantidade").value = "";
+		document.getElementById("localizado").checked = false;
+		document.getElementById("nome").focus();
+
+		const messageElement = document.getElementById("message");
+		messageElement.innerText = "Produto salvo com sucesso!";
+		messageElement.style.color = "green";
+	}
 
     function updateProduct() {
         const codigo = document.getElementById("codigo").value;
