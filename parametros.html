@@ -118,56 +118,13 @@
 <div class="list-container">
     <h2>Parâmetros Cadastrados</h2>
     <div id="parameterList">
-        </div>
-</div>
-
-<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirmação</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                Tem certeza que deseja excluir este parâmetro?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger" onclick="confirmDeleteParameter()">Excluir</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Aviso</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="modalMessage">
-                </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-            </div>
-        </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    const messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
-    const modalMessage = document.getElementById('modalMessage');
-    const deleteConfirmationModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
-
     let parameterToDelete = null;
-
-    function showMessage(message) {
-        modalMessage.textContent = message;
-        messageModal.show();
-    }
 
     function saveParameters() {
         const lowStockInput = document.getElementById('lowStock');
@@ -179,12 +136,12 @@
         const located = locatedInput.checked;
 
         if (isNaN(lowStock)) {
-            showMessage('Preencha corretamente o campo "Limite Estoque Baixo".');
+            alert('Preencha corretamente o campo "Limite Estoque Baixo".');
             return;
         }
 
         if (isNaN(highStock)) {
-            showMessage('Preencha corretamente o campo "Limite Excesso de Estoque".');
+            alert('Preencha corretamente o campo "Limite Excesso de Estoque".');
             return;
         }
 
@@ -192,14 +149,14 @@
 
         // Verifica se já existe UM parâmetro válido
         if (parameters.length >= 1) {
-            showMessage('Já existe um parâmetro cadastrado. Exclua o existente para cadastrar um novo.');
+            alert('Já existe um parâmetro cadastrado. Exclua o existente para cadastrar um novo.');
             return;
         }
 
         // Adiciona novo parâmetro
         parameters.push({ lowStock, highStock, located });
         localStorage.setItem('parameters', JSON.stringify(parameters));
-        showMessage('Parâmetro salvo com sucesso!');
+        alert('Parâmetro salvo com sucesso!');
 
         // Limpa campos
         lowStockInput.value = '';
@@ -229,19 +186,16 @@
             <strong>Estoque Baixo:</strong> ${param.lowStock} <br>
             <strong>Excesso Estoque:</strong> ${param.highStock} <br>
             <strong>Localizado:</strong> ${param.located ? 'Sim' : 'Não'} <br><br>
-            <button onclick="openDeleteConfirmation()" class="delete-btn">Excluir</button>
+            <button onclick="deleteParameter()" class="delete-btn">Excluir</button>
         `;
         parameterList.appendChild(item);
     }
 
-    function openDeleteConfirmation() {
-        deleteConfirmationModal.show();
-    }
-
-    function confirmDeleteParameter() {
-        localStorage.removeItem('parameters');
-        loadParameters();
-        deleteConfirmationModal.hide();
+    function deleteParameter() {
+        if (confirm('Tem certeza que deseja excluir este parâmetro?')) {
+            localStorage.removeItem('parameters');
+            loadParameters();
+        }
     }
 
     window.onload = loadParameters;
