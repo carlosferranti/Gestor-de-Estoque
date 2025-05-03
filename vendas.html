@@ -51,6 +51,12 @@
         button:hover {
             background-color: #0056b3;
         }
+        .back-button {
+            background-color: #28a745;
+        }
+        .back-button:hover {
+            background-color: #218838;
+        }
         .result {
             margin-top: 20px;
             font-size: 18px;
@@ -63,24 +69,16 @@
         .error {
             color: red;
         }
+        .price-display {
+            font-weight: bold;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
-
-<div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Aviso</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="modalMessage"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="form-container">
     <h2>Cadastro de Vendas</h2>
@@ -91,11 +89,19 @@
         </select>
     </div>
     <div class="form-group">
-        <label for="quantity">Quantidade da venda</label>
-        <input type="number" id="quantity" min="0" required>
+        <label for="productPrice">Preço Unitário</label>
+        <div id="productPrice" class="price-display">R$ 0,00</div>
+    </div>
+    <div class="form-group">
+        <label for="quantity">Quantidade</label>
+        <input type="number" id="quantity" min="1" value="1" required>
+    </div>
+    <div class="form-group">
+        <label for="totalPrice">Valor Total</label>
+        <div id="totalPrice" class="price-display">R$ 0,00</div>
     </div>
     <button onclick="analyzeStock()">Cadastrar Venda</button>
-    <button onclick="window.location.href='index.html'" style="background-color: #28a745;">Voltar para Página Inicial</button>
+    <button class="back-button" onclick="window.location.href='index.html'">Voltar para Página Inicial</button>
 
     <div class="result" id="resultAction"></div>
 </div>
@@ -103,12 +109,18 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    const messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
-    const modalMessage = document.getElementById('modalMessage');
+    let selectedProduct = null;
 
-    function showModalMessage(message) {
-        modalMessage.innerHTML = message;
-        messageModal.show();
+    function formatPrice(value) {
+        return 'R$ ' + parseFloat(value).toFixed(2).replace('.', ',');
+    }
+
+    function calculateTotal() {
+        if (!selectedProduct) return;
+        
+        const quantity = parseInt(document.getElementById('quantity').value) || 0;
+        const total = quantity * parseFloat(selectedProduct.value);
+        document.getElementById('totalPrice').textContent = formatPrice(total);
     }
 
     function loadProducts() {
@@ -120,52 +132,79 @@
 
         products.forEach(product => {
             let option = document.createElement('option');
-            option.value = product.name;
+            option.value = product.id;
             option.textContent = product.name;
+            option.dataset.price = product.value;
             productSelect.appendChild(option);
         });
     }
 
     function analyzeStock() {
-        let productName = document.getElementById('productSelect').value;
-        let quantityInput = document.getElementById('quantity').value;
-
-        if (!productName) {
-            showModalMessage('Selecione um produto!');
+        if (!selectedProduct) {
+            alert('Selecione um produto!');
             return;
         }
 
+        let quantityInput = document.getElementById('quantity').value;
         if (quantityInput === '') {
-            showModalMessage('Informe a quantidade!');
+            alert('Informe a quantidade!');
             return;
         }
 
         let quantityToSell = parseInt(quantityInput);
         if (isNaN(quantityToSell) || quantityToSell <= 0) {
-            showModalMessage('Quantidade inválida!');
+            alert('Quantidade inválida!');
             return;
         }
 
+        if (selectedProduct.quantity < quantityToSell) {
+            alert(`Estoque insuficiente. Quantidade disponível: ${selectedProduct.quantity}`);
+            return;
+        }
+
+        // Atualiza o estoque do produto
+        selectedProduct.quantity -= quantityToSell;
+        
+        // Atualiza a lista de produtos no localStorage
         let products = JSON.parse(localStorage.getItem('products')) || [];
-        let product = products.find(p => p.name === productName);
-
-        if (!product) {
-            showModalMessage('Produto não encontrado!');
-            return;
+        const productIndex = products.findIndex(p => p.id === selectedProduct.id);
+        if (productIndex !== -1) {
+            products[productIndex] = selectedProduct;
+            localStorage.setItem('products', JSON.stringify(products));
         }
 
-        if (product.quantity < quantityToSell) {
-            showModalMessage(`Estoque insuficiente. Quantidade disponível: ${product.quantity}`);
-            return;
-        }
+        // Registra a venda como movimentação de saída
+        let movements = JSON.parse(localStorage.getItem('movements')) || [];
+        movements.push({
+            productId: selectedProduct.id,
+            type: 'saida',
+            quantity: quantityToSell,
+            date: new Date().toISOString(),
+            resultingStock: selectedProduct.quantity,
+            unitPrice: parseFloat(selectedProduct.value),
+            totalPrice: parseFloat(selectedProduct.value) * quantityToSell
+        });
+        localStorage.setItem('movements', JSON.stringify(movements));
 
-        product.quantity -= quantityToSell;
-        localStorage.setItem('products', JSON.stringify(products));
-
-        showModalMessage(`Venda realizada com sucesso. Estoque atualizado.<br><small>Quantidade restante: ${product.quantity}</small>`);
+        // Atualiza interface
+        const totalValue = parseFloat(selectedProduct.value) * quantityToSell;
+        alert(
+            `Venda realizada com sucesso!\n\n` +
+            `Produto: ${selectedProduct.name}\n` +
+            `Quantidade: ${quantityToSell}\n` +
+            `Valor Unitário: ${formatPrice(selectedProduct.value)}\n` +
+            `Valor Total: ${formatPrice(totalValue)}\n\n` +
+            `Estoque atual: ${selectedProduct.quantity}`
+        );
+        
+        // Limpa os campos
+        document.getElementById('quantity').value = '1';
+        document.getElementById('productSelect').value = '';
+        document.getElementById('productPrice').textContent = 'R$ 0,00';
+        document.getElementById('totalPrice').textContent = 'R$ 0,00';
+        selectedProduct = null;
+        
         loadProducts();
-        document.getElementById('quantity').value = '';
-
         updateStockMessage();
     }
 
@@ -179,14 +218,13 @@
             return;
         }
 
-        let product = products.find(p => p.name === productName);
+        let product = products.find(p => p.id === productName);
         if (!product) {
             resultAction.innerHTML = '<span class="error">Produto não encontrado!</span>';
             return;
         }
 
         let message = '';
-
         if (product.quantity > 0) {
             if (product.minStock !== undefined && product.quantity < product.minStock) {
                 message = '<span class="error">⚠ Estoque Baixo: é necessário repor estoque.</span>';
@@ -202,7 +240,24 @@
         resultAction.innerHTML = message;
     }
 
-    document.getElementById('productSelect').addEventListener('change', updateStockMessage);
+    // Event Listeners
+    document.getElementById('productSelect').addEventListener('change', function() {
+        const products = JSON.parse(localStorage.getItem('products')) || [];
+        selectedProduct = products.find(p => p.id === this.value);
+        
+        if (selectedProduct) {
+            document.getElementById('productPrice').textContent = formatPrice(selectedProduct.value);
+            calculateTotal();
+            updateStockMessage();
+        } else {
+            document.getElementById('productPrice').textContent = 'R$ 0,00';
+            document.getElementById('totalPrice').textContent = 'R$ 0,00';
+            updateStockMessage();
+        }
+    });
+
+    document.getElementById('quantity').addEventListener('input', calculateTotal);
+
     window.onload = function () {
         loadProducts();
         updateStockMessage();

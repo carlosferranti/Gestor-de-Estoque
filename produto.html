@@ -125,8 +125,8 @@
     <button onclick="addProduct()">Salvar</button>
     <button onclick="updateProduct()">Atualizar</button>
     <button onclick="findProduct()">Localizar</button>
-    <button onclick="window.location.href='report.html'">Relatório</button>
-    <button onclick="openMovement()">Movimentação</button>
+    <button onclick="window.location.href='report.html?from=produto'">Relatório</button>
+    <button onclick="window.location.href='movimento.html'">Histórico de Movimentações</button>
 </div>
 
 <div class="back-button-container">
@@ -141,6 +141,19 @@
         document.getElementById("quantidade").value = "";
         document.getElementById("localizado").checked = false;
         document.getElementById("nome").focus();
+    }
+
+    // Função para registrar movimentações
+    function registerMovement(productId, productName, movementType, quantity, resultingStock) {
+        let movements = JSON.parse(localStorage.getItem('movements')) || [];
+        movements.push({
+            productId: productId,
+            type: movementType,
+            quantity: quantity,
+            date: new Date().toISOString(),
+            resultingStock: resultingStock
+        });
+        localStorage.setItem('movements', JSON.stringify(movements));
     }
 
     function addProduct() {
@@ -174,6 +187,10 @@
         });
 
         localStorage.setItem('products', JSON.stringify(products));
+        
+        // Registrar a movimentação de entrada para o novo produto
+        registerMovement(codigo, nome, 'entrada', quantidadeInt, quantidadeInt);
+        
         newProduct();
 
         const messageElement = document.getElementById("message");
@@ -195,9 +212,9 @@
 
         preco = preco.replace(',', '.').trim();
         const precoDecimal = parseFloat(preco);
-        const quantidadeInt = parseInt(quantidade, 10);
+        const newQuantity = parseInt(quantidade, 10);
 
-        if (isNaN(precoDecimal) || isNaN(quantidadeInt)) {
+        if (isNaN(precoDecimal) || isNaN(newQuantity)) {
             alert("Preço ou quantidade inválidos.");
             return;
         }
@@ -206,15 +223,25 @@
         const productIndex = products.findIndex(p => p.id === codigo);
 
         if (productIndex !== -1) {
+            const oldProduct = products[productIndex];
+            const oldQuantity = oldProduct.quantity;
+            const quantityDifference = newQuantity - oldQuantity;
+
+            // Atualiza o produto
             products[productIndex] = {
-                ...products[productIndex],
+                ...oldProduct,
                 name: nome,
                 value: precoDecimal.toFixed(2),
-                quantity: quantidadeInt,
+                quantity: newQuantity,
                 located: localizado
             };
 
             localStorage.setItem('products', JSON.stringify(products));
+
+            // Se a quantidade aumentou, registra uma movimentação de entrada
+            if (quantityDifference > 0) {
+                registerMovement(codigo, nome, 'entrada', quantityDifference, newQuantity);
+            }
 
             const messageElement = document.getElementById("message");
             messageElement.innerText = "Produto atualizado com sucesso!";
