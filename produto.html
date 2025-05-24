@@ -111,11 +111,10 @@
         <label for="quantidade">Quantidade</label>
         <input type="text" id="quantidade" placeholder="Digite a quantidade do produto" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
     </div>
-    <div class="form-group">
-        <label for="localizado">
-            <input type="checkbox" id="localizado"> Produto Localizado
-        </label>
-    </div>
+	<div class="form-group">
+		<label for="localizacao">Localização</label>
+		<input type="text" id="localizacao" placeholder="Digite a localização do produto">
+	</div>
 </div>
 
 <div id="message"></div>
@@ -139,7 +138,7 @@
         document.getElementById("nome").value = "";
         document.getElementById("preco").value = "";
         document.getElementById("quantidade").value = "";
-        document.getElementById("localizado").checked = false;
+        document.getElementById("localizacao").value = "";
         document.getElementById("nome").focus();
     }
 
@@ -161,7 +160,7 @@
 		const nome = document.getElementById("nome").value;
 		let preco = document.getElementById("preco").value;
 		const quantidade = document.getElementById("quantidade").value;
-		const localizado = document.getElementById("localizado").checked;
+		const localizacao = document.getElementById("localizacao").value.trim();
 
 		if (!codigo || !nome || !preco || !quantidade) {
 			alert("Por favor, preencha todos os campos.");
@@ -183,7 +182,7 @@
 			name: nome,
 			value: precoDecimal.toFixed(2),
 			quantity: quantidadeInt,
-			located: localizado
+			location: localizacao
 		});
 
         localStorage.setItem('products', JSON.stringify(products));
@@ -199,7 +198,7 @@
         const nome = document.getElementById("nome").value;
         let preco = document.getElementById("preco").value;
         const quantidade = document.getElementById("quantidade").value;
-        const localizado = document.getElementById("localizado").checked;
+        const localizacao = document.getElementById("localizacao").value.trim();
 
         if (!codigo || !nome || !preco || !quantidade) {
             alert("Por favor, preencha todos os campos.");
@@ -229,7 +228,7 @@
                 name: nome,
                 value: precoDecimal.toFixed(2),
                 quantity: newQuantity,
-                located: localizado
+                location: localizacao
             };
 
             localStorage.setItem('products', JSON.stringify(products));
@@ -267,7 +266,7 @@
             document.getElementById("nome").value = firstProduct.name;
             document.getElementById("preco").value = firstProduct.value.replace('.', ',');
             document.getElementById("quantidade").value = firstProduct.quantity;
-            document.getElementById("localizado").checked = firstProduct.located || false;
+            document.getElementById("localizacao").value = firstProduct.location || "";
 
             const messageElement = document.getElementById("message");
             messageElement.innerText = "Produto(s) localizado(s) com sucesso!";
