@@ -105,12 +105,6 @@
         <label for="highStock">Limite Excesso de Estoque</label>
         <input type="number" id="highStock" min="0" required>
     </div>
-    <div class="form-group checkbox-group">
-        <label for="located">
-            <input type="checkbox" id="located" checked>
-            Produto Localizado?
-        </label>
-    </div>
     <button onclick="saveParameters()">Salvar Parâmetro</button>
     <button onclick="window.location.href='index.html'" style="background-color: #28a745;">Voltar para Página Inicial</button>
 </div>
@@ -184,8 +178,7 @@
         item.className = 'parameter-item';
         item.innerHTML = `
             <strong>Estoque Baixo:</strong> ${param.lowStock} <br>
-            <strong>Excesso Estoque:</strong> ${param.highStock} <br>
-            <strong>Localizado:</strong> ${param.located ? 'Sim' : 'Não'} <br><br>
+            <strong>Excesso Estoque:</strong> ${param.highStock} <br>            
             <button onclick="deleteParameter()" class="delete-btn">Excluir</button>
         `;
         parameterList.appendChild(item);

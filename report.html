@@ -71,6 +71,22 @@
         .back-button:hover {
             background-color: #218838;
         }
+
+        /* Cores para situação de estoque */
+        .status-baixo {
+            color: #dc3545; /* vermelho */
+            font-weight: bold;
+        }
+
+        .status-excesso {
+            color: #fd7e14; /* laranja */
+            font-weight: bold;
+        }
+
+        .status-normal {
+            color: #28a745; /* verde */
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -87,6 +103,7 @@
                     <th>Quantidade</th>
                     <th>Valor</th>
                     <th>Localização</th>
+                    <th>Situação</th>
                 </tr>
             </thead>
             <tbody>
@@ -98,28 +115,39 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Carrega os produtos
-            var products = JSON.parse(localStorage.getItem('products')) || [];
-            var tableBody = document.querySelector('tbody');
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const parameters = JSON.parse(localStorage.getItem('parameters')) || [];
+            const tableBody = document.querySelector('tbody');
 
-            // Ordenar os produtos por nome (ordem alfabética)
+            const lowStockLimit = parameters[0]?.lowStock ?? 0;
+            const highStockLimit = parameters[0]?.highStock ?? Infinity;
+
             products.sort(function (a, b) {
-                var nameA = a.name.toUpperCase();
-                var nameB = b.name.toUpperCase();
-                if (nameA < nameB) return -1;
-                if (nameA > nameB) return 1;
-                return 0;
+                const nameA = a.name.toUpperCase();
+                const nameB = b.name.toUpperCase();
+                return nameA.localeCompare(nameB);
             });
 
             if (products.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="6">Nenhum produto cadastrado.</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="7">Nenhum produto cadastrado.</td></tr>';
             } else {
                 products.forEach(function (product, index) {
-                    var quantity = parseInt(product.quantity, 10);
-                    var value = product.value ? parseFloat(product.value).toFixed(2) : 'N/A';
-                    var location = product.location || '-';
+                    const quantity = parseInt(product.quantity, 10);
+                    const value = product.value ? parseFloat(product.value).toFixed(2) : 'N/A';
+                    const location = product.location || '-';
 
-                    var row = document.createElement('tr');
+                    let situationText = 'Normal';
+                    let situationClass = 'status-normal';
+
+                    if (quantity <= lowStockLimit) {
+                        situationText = 'Estoque Baixo';
+                        situationClass = 'status-baixo';
+                    } else if (quantity >= highStockLimit) {
+                        situationText = 'Excesso de Estoque';
+                        situationClass = 'status-excesso';
+                    }
+
+                    const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${index + 1}</td>
                         <td>${product.id}</td>
@@ -127,25 +155,30 @@
                         <td>${quantity}</td>
                         <td>R$ ${value}</td>
                         <td>${location}</td>
+                        <td><span class="${situationClass}">${situationText}</span></td>
                     `;
                     tableBody.appendChild(row);
                 });
             }
 
-            // Configura o botão de voltar
+            // Botão voltar
             document.getElementById('backButton').addEventListener('click', function () {
                 const urlParams = new URLSearchParams(window.location.search);
                 const from = urlParams.get('from');
 
-                if (from === 'produto') {
-                    window.location.href = 'produto.html';
-                } else if (from === 'venda') {
-                    window.location.href = 'venda.html';
-                } else if (from === 'menu') {
-                    window.location.href = 'index.html';
-                } else {
-                    // Fallback padrão
-                    window.location.href = 'index.html';
+                switch (from) {
+                    case 'produto':
+                        window.location.href = 'produto.html';
+                        break;
+                    case 'venda':
+                        window.location.href = 'venda.html';
+                        break;
+                    case 'menu':
+                        window.location.href = 'index.html';
+                        break;
+                    default:
+                        window.location.href = 'index.html';
+                        break;
                 }
             });
         });
