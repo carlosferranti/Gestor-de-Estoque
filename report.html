@@ -74,17 +74,17 @@
 
         /* Cores para situação de estoque */
         .status-baixo {
-            color: #dc3545; /* vermelho */
+            color: #dc3545;
             font-weight: bold;
         }
 
         .status-excesso {
-            color: #fd7e14; /* laranja */
+            color: #fd7e14;
             font-weight: bold;
         }
 
         .status-normal {
-            color: #28a745; /* verde */
+            color: #28a745;
             font-weight: bold;
         }
     </style>
@@ -161,29 +161,26 @@
                 });
             }
 
-            // Botão voltar
+            // Botão voltar - comportamento ajustado
             document.getElementById('backButton').addEventListener('click', function () {
                 const urlParams = new URLSearchParams(window.location.search);
                 const from = urlParams.get('from');
 
-                switch (from) {
-                    case 'produto':
-                        window.location.href = 'produto.html';
-                        break;
-                    case 'venda':
-                        window.location.href = 'venda.html';
-                        break;
-                    case 'menu':
-                        window.location.href = 'index.html';
-                        break;
-                    default:
-                        window.location.href = 'index.html';
-                        break;
+                // Se veio do cadastro de produtos, volta para produto.html
+                if (from === 'produto') {
+                    window.location.href = 'produto.html';
+                } 
+                // Se veio do menu principal, volta para index.html
+                else if (from === 'menu') {
+                    window.location.href = 'index.html';
+                }
+                // Se não tem parâmetro ou é outro, volta para index.html
+                else {
+                    window.location.href = 'index.html';
                 }
             });
         });
     </script>
 
 </body>
-
 </html>

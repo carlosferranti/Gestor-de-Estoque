@@ -10,13 +10,14 @@
         body {
             font-family: Arial, sans-serif;
             background: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: start;
-            padding: 40px;
+            padding: 20px;
             margin: 0;
-            height: 100vh;
             box-sizing: border-box;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .table-container {
@@ -25,31 +26,58 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 900px;
+            margin-bottom: 20px;
         }
 
         h2 {
             text-align: center;
             margin-bottom: 20px;
+            color: #333;
         }
 
-        .back-button {
-            background-color: #28a745;
-            color: white;
-            cursor: pointer;
-            border: none;
-            margin-top: 15px;
-            padding: 10px;
-            font-size: 16px;
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 15px;
             border-radius: 5px;
-            width: auto;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .back-button:hover {
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-success:hover {
             background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
         }
 
         table {
@@ -58,8 +86,7 @@
             margin-bottom: 20px;
         }
 
-        th,
-        td {
+        th, td {
             padding: 12px;
             text-align: left;
             border: 1px solid #ddd;
@@ -68,37 +95,166 @@
         th {
             background-color: #007bff;
             color: white;
+            position: sticky;
+            top: 0;
         }
 
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
 
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .badge-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .badge-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-container input, .search-container select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-container button {
+            padding: 10px 20px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            margin: 0 5px;
+        }
+
         .modal-body {
             font-size: 16px;
+        }
+
+        .value-cell {
+            text-align: right;
+            font-family: monospace;
+        }
+
+        .back-button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .back-button {
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .back-button:hover {
+            background-color: #218838;
+        }
+
+        @media (max-width: 768px) {
+            .table-container {
+                padding: 10px;
+            }
+            
+            th, td {
+                padding: 8px;
+                font-size: 14px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 
 <body>
+    <div class="main-container">
+        <div class="table-container">
+            <h2>Histórico de Movimentações</h2>
+            
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Pesquisar por produto...">
+                <select id="typeFilter">
+                    <option value="">Todos os tipos</option>
+                    <option value="entrada">Entrada</option>
+                    <option value="saida">Saída</option>
+                </select>
+                <input type="date" id="dateFilter">
+                <button class="btn btn-primary" onclick="filterMovements()">Filtrar</button>
+                <button class="btn btn-secondary" onclick="clearFilters()">Limpar</button>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-danger" onclick="clearAllMovements()">Limpar Histórico</button>
+            </div>
+            
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Data/Hora</th>
+                            <th>Produto</th>
+                            <th>Código</th>
+                            <th>Tipo</th>
+                            <th>Quantidade</th>
+                            <th>Preço Unitário</th>
+                            <th>Valor Total</th>
+                            <th>Estoque Após</th>
+                        </tr>
+                    </thead>
+                    <tbody id="movementTableBody"></tbody>
+                </table>
+            </div>
+            
+            <div class="pagination" id="paginationContainer">
+                <button class="btn btn-primary" id="prevPage">Anterior</button>
+                <span id="pageInfo" style="margin: 0 10px; line-height: 36px;">Página 1</span>
+                <button class="btn btn-primary" id="nextPage">Próxima</button>
+            </div>
 
-    <div class="table-container">
-        <h2>Histórico de Movimentações</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Código</th>
-                    <th>Produto</th>
-                    <th>Tipo</th>
-                    <th>Quantidade</th>
-                    <th>Data/Hora</th>
-                    <th>Estoque Após</th>
-                </tr>
-            </thead>
-            <tbody id="movementTableBody"></tbody>
-        </table>
-        <button class="back-button" onclick="window.location.href='produto.html'">Voltar para Página Produtos</button>
+            <!-- Botão Voltar para Produtos posicionado abaixo do grid -->
+            <div class="back-button-container">
+                <button class="back-button" onclick="window.location.href='produto.html'">Voltar</button>
+            </div>
+        </div>
+    </div>
     </div>
 
     <div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
@@ -116,58 +272,215 @@
         </div>
     </div>
 
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmação</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="confirmMessage"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmAction">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // Variáveis globais
+        let currentPage = 1;
+        const itemsPerPage = 20;
+        let filteredMovements = [];
+        let allMovements = [];
+        
+        // Elementos modais
         const messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
         const modalMessage = document.getElementById('modalMessage');
-
-        function showModalMessage(message) {
-            modalMessage.innerHTML = message;
-            messageModal.show();
+        const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+        const confirmMessage = document.getElementById('confirmMessage');
+        const confirmAction = document.getElementById('confirmAction');
+        
+        // Formata valores monetários
+        function formatPrice(value) {
+            if (value === undefined || value === null) return 'R$ --';
+            return 'R$ ' + parseFloat(value).toFixed(2).replace('.', ',');
         }
-
+        
+        // Carrega produtos do localStorage
         function loadProducts() {
-            let products = JSON.parse(localStorage.getItem('products')) || [];
-            return products;
+            return JSON.parse(localStorage.getItem('products')) || [];
         }
-
-        function loadMovements() {
-            let movements = JSON.parse(localStorage.getItem('movements')) || [];
+        
+        // Carrega movimentações do localStorage
+        function loadAllMovements() {
+            allMovements = JSON.parse(localStorage.getItem('movements')) || [];
+            return allMovements;
+        }
+        
+        // Filtra as movimentações
+        function filterMovements() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('typeFilter').value;
+            const dateFilter = document.getElementById('dateFilter').value;
+            
+            const products = loadProducts();
+            
+            filteredMovements = allMovements.filter(movement => {
+                const product = products.find(p => p.id === movement.productId);
+                const productName = product ? product.name.toLowerCase() : '';
+                
+                // Filtro por texto
+                const textMatch = !searchTerm || 
+                    productName.includes(searchTerm) || 
+                    movement.productId.toLowerCase().includes(searchTerm);
+                
+                // Filtro por tipo
+                const typeMatch = !typeFilter || movement.type === typeFilter;
+                
+                // Filtro por data
+                let dateMatch = true;
+                if (dateFilter) {
+                    const movementDate = new Date(movement.date).toISOString().split('T')[0];
+                    dateMatch = movementDate === dateFilter;
+                }
+                
+                return textMatch && typeMatch && dateMatch;
+            });
+            
+            // Se não encontrou resultados com os filtros, mostra todos
+            if (filteredMovements.length === 0 && (searchTerm || typeFilter || dateFilter)) {
+                showModalMessage('Nenhuma movimentação encontrada com os filtros aplicados. Mostrando todas as movimentações.');
+                filteredMovements = [...allMovements];
+            }
+            
+            currentPage = 1;
+            renderMovements();
+        }
+        
+        // Limpa os filtros
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('typeFilter').value = '';
+            document.getElementById('dateFilter').value = '';
+            filteredMovements = [...allMovements];
+            currentPage = 1;
+            renderMovements();
+        }
+        
+        // Renderiza as movimentações na tabela
+        function renderMovements() {
             let tableBody = document.getElementById('movementTableBody');
             tableBody.innerHTML = '';
-
-            let products = loadProducts();
-
-            if (movements.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="7">Nenhuma movimentação registrada.</td></tr>';
+            
+            // Verifica se há movimentações
+            if (allMovements.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="9">Nenhuma movimentação registrada ainda.</td></tr>';
+                updatePagination();
                 return;
             }
-
-            movements.sort((a, b) => new Date(b.date) - new Date(a.date)); // Ordena por data descendente
-
-            movements.forEach((movement, index) => {
-                let product = products.find(p => p.id === movement.productId);
-                let productName = product ? product.name : 'Produto não encontrado';
-                let row = document.createElement('tr');
+            
+            const products = loadProducts();
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageMovements = filteredMovements.slice(startIndex, endIndex);
+            
+            if (pageMovements.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="9">Nenhuma movimentação encontrada.</td></tr>';
+                updatePagination();
+                return;
+            }
+            
+            pageMovements.forEach((movement, index) => {
+                const globalIndex = startIndex + index + 1;
+                const product = products.find(p => p.id === movement.productId);
+                const productName = product ? product.name : 'Produto não encontrado';
+                
+                const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${movement.productId}</td>
-                    <td>${productName}</td>
-                    <td>${movement.type === 'entrada' ? 'Entrada' : 'Saída'}</td>
-                    <td>${movement.quantity}</td>
+                    <td>${globalIndex}</td>
                     <td>${new Date(movement.date).toLocaleString('pt-BR')}</td>
+                    <td>${productName}</td>
+                    <td>${movement.productId}</td>
+                    <td>
+                        <span class="badge ${movement.type === 'entrada' ? 'badge-success' : 'badge-danger'}">
+                            ${movement.type === 'entrada' ? 'Entrada' : 'Saída'}
+                        </span>
+                    </td>
+                    <td>${movement.quantity}</td>
+                    <td class="value-cell">${formatPrice(movement.unitPrice || '--')}</td>
+                    <td class="value-cell">${formatPrice(movement.totalPrice || '--')}</td>
                     <td>${movement.resultingStock}</td>
                 `;
                 tableBody.appendChild(row);
             });
+            
+            updatePagination();
         }
-
+        
+        // Atualiza a navegação por páginas
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredMovements.length / itemsPerPage);
+            document.getElementById('pageInfo').textContent = `Página ${currentPage} de ${totalPages}`;
+            
+            document.getElementById('prevPage').disabled = currentPage <= 1;
+            document.getElementById('nextPage').disabled = currentPage >= totalPages;
+            
+            document.getElementById('paginationContainer').style.display = 
+                filteredMovements.length > itemsPerPage ? 'flex' : 'none';
+        }
+        
+        // Limpa todo o histórico de movimentações
+        function clearAllMovements() {
+            confirmMessage.textContent = 'Tem certeza que deseja limpar todo o histórico de movimentações? Esta ação não pode ser desfeita.';
+            confirmAction.onclick = function() {
+                localStorage.removeItem('movements');
+                allMovements = [];
+                filteredMovements = [];
+                renderMovements();
+                confirmModal.hide();
+                showModalMessage('Histórico de movimentações limpo com sucesso!');
+            };
+            confirmModal.show();
+        }
+        
+        // Exibe mensagem no modal
+        function showModalMessage(message) {
+            modalMessage.innerHTML = message;
+            messageModal.show();
+        }
+        
+        // Event Listeners
+        document.getElementById('prevPage').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderMovements();
+            }
+        });
+        
+        document.getElementById('nextPage').addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredMovements.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderMovements();
+            }
+        });
+        
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                filterMovements();
+            }
+        });
+        
+        // Inicialização
         window.onload = function () {
-            loadMovements();
+            loadAllMovements();
+            filteredMovements = [...allMovements]; // Já começa com todos os registros
+            renderMovements();
         };
     </script>
-
 </body>
-
 </html>
