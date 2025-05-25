@@ -247,34 +247,34 @@
     }
 
     function findProduct() {
-        const searchTerm = prompt("Digite parte do nome ou código do produto que deseja localizar:");
+		const searchTerm = prompt("Digite parte da Localização do produto:");
 
-        if (!searchTerm) {
-            alert("Por favor, insira um termo de busca.");
-            return;
-        }
+		if (!searchTerm) {
+			alert("Por favor, insira um termo de busca.");
+			return;
+		}
 
-        const products = JSON.parse(localStorage.getItem('products')) || [];
-        const matchingProducts = products.filter(product =>
-            (product.name && product.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-            (product.id && product.id.includes(searchTerm))
-        );
+		const products = JSON.parse(localStorage.getItem('products')) || [];
+		const matchingProducts = products.filter(product =>
+			product.location && product.location.toLowerCase().includes(searchTerm.toLowerCase())
+		);
 
-        if (matchingProducts.length > 0) {
-            const firstProduct = matchingProducts[0];
-            document.getElementById("codigo").value = firstProduct.id;
-            document.getElementById("nome").value = firstProduct.name;
-            document.getElementById("preco").value = firstProduct.value.replace('.', ',');
-            document.getElementById("quantidade").value = firstProduct.quantity;
-            document.getElementById("localizacao").value = firstProduct.location || "";
+		if (matchingProducts.length > 0) {
+			const firstProduct = matchingProducts[0];
+			document.getElementById("codigo").value = firstProduct.id;
+			document.getElementById("nome").value = firstProduct.name;
+			document.getElementById("preco").value = firstProduct.value.replace('.', ',');
+			document.getElementById("quantidade").value = firstProduct.quantity;
+			document.getElementById("localizacao").value = firstProduct.location || "";
 
-            const messageElement = document.getElementById("message");
-            messageElement.innerText = "Produto(s) localizado(s) com sucesso!";
-            messageElement.style.color = "green";
-        } else {
-            alert("Nenhum produto encontrado.");
-        }
-    }
+			const messageElement = document.getElementById("message");
+			messageElement.innerText = "Produto(s) localizado(s) com sucesso!";
+			messageElement.style.color = "green";
+		} else {
+			alert("Nenhum produto encontrado para essa localização.");
+		}
+	}
+
 
     function generateUUID() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {

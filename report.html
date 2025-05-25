@@ -86,7 +86,7 @@
                     <th>Produto</th>
                     <th>Quantidade</th>
                     <th>Valor</th>
-                    <th>Produto Localizado</th>
+                    <th>Localização</th>
                 </tr>
             </thead>
             <tbody>
@@ -97,7 +97,7 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Carrega os produtos
             var products = JSON.parse(localStorage.getItem('products')) || [];
             var tableBody = document.querySelector('tbody');
@@ -117,7 +117,7 @@
                 products.forEach(function (product, index) {
                     var quantity = parseInt(product.quantity, 10);
                     var value = product.value ? parseFloat(product.value).toFixed(2) : 'N/A';
-                    var located = product.located ? 'Sim' : 'Não';
+                    var location = product.location || '-';
 
                     var row = document.createElement('tr');
                     row.innerHTML = `
@@ -126,14 +126,14 @@
                         <td>${product.name}</td>
                         <td>${quantity}</td>
                         <td>R$ ${value}</td>
-                        <td>${located}</td>
+                        <td>${location}</td>
                     `;
                     tableBody.appendChild(row);
                 });
             }
 
             // Configura o botão de voltar
-            document.getElementById('backButton').addEventListener('click', function() {
+            document.getElementById('backButton').addEventListener('click', function () {
                 const urlParams = new URLSearchParams(window.location.search);
                 const from = urlParams.get('from');
 
